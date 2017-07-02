@@ -2,14 +2,6 @@ import Foundation
 
 print("Hello, World!")
 
-struct CardConstants {
-    struct BloodfenRaptor {
-        static let name = "Bloodfen Raptor"
-        static let cost = 2
-        
-    }
-}
-
 class Card {
     public enum Class {
         case neutral
@@ -54,13 +46,11 @@ class Card {
         }
     }
     
-    var name: String;
-    var cost: Int;
-    
-    init(withName name: String) {
-        self.name = name
-        self.cost = 0
-    }
+    var name: String!
+    var cost: Int!
+    var cardClass: Card.Class!
+    var text: String!
+    internal init() {}
 }
 
 print(Card.Class.warlock.getSymbol())
@@ -69,11 +59,30 @@ print(Card.Class.shaman.getSymbol())
 
 
 class Minion: Card {
-    
+    var attack: Int!
+    var health: Int!
+    internal override init() {}
 }
 
 class BloodfenRaptor: Minion {
+    struct Constants {
+        static let name = "Bloodfen Raptor"
+        static let cost = 2
+        static let cardClass = Card.Class.neutral
+        static let text = ""
+        static let attack = 3
+        static let health = 2
+    }
     
+    public override init() {
+        super.init()
+        name = Constants.name
+        cost = Constants.cost
+        cardClass = Constants.cardClass
+        text = Constants.text
+        attack = Constants.attack
+        health = Constants.health
+    }
 }
 
 class Spell: Card {
