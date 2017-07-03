@@ -1,31 +1,45 @@
+// Copyright © 2017 Jack Maloney. All Rights Reserved.
+//
+// This Source Code Form is subject to the terms of the Mozilla Public
+// License, v. 2.0. If a copy of the MPL was not distributed with this
+// file, You can obtain one at http://mozilla.org/MPL/2.0/.
+
 import Foundation
 
-protocol Player: EventHandler {
-    
-}
+struct Player {
+    public private(set) var isPlayerOne: Bool
+    public private(set) var goFirst: Bool
+    public private(set) var interface: PlayerInterface
+    public private(set) var deck: Deck
+    public private(set) var hand: Hand
 
-struct CLIPlayer: Player {
-    var isPlayerOne: Bool!
-    var goFirst: Bool!
-    
+    init(isPlayerOne: Bool, isGoingFirst: Bool, interface: PlayerInterface, deck: Deck, startingHand: Hand) {
+        self.isPlayerOne = isPlayerOne
+        goFirst = isGoingFirst
+        self.interface = interface
+        self.deck = deck
+        hand = startingHand
+    }
+
     /// Returns "Player One" if player one or "Player Two" if player two.
     func playerString() -> String {
-        return isPlayerOne ? "Player One" : "Player Two";
+        return isPlayerOne ? "Player One" : "Player Two"
     }
-    
-    mutating func handleEvent(_ event: Event) {
+
+    mutating func handleEvent(_ event: PlayerEvent) {
         switch event {
-        case let .coinFlipped(flipResult):
-            goFirst = flipResult
-            if (goFirst) {
-                print("\(playerString()) going first")
-            } else {
-                print("\(playerString()) going second")
-            }
-        case let .gameWillStart(player1):
-            isPlayerOne = player1!
+
         default:
             break
         }
+    }
+}
+
+protocol PlayerInterface {
+    mutating func handleEvent(_ event: PlayerInterfaceEvent)
+}
+
+struct CLIPlayer: PlayerInterface {
+    mutating func handleEvent(_: PlayerInterfaceEvent) {
     }
 }

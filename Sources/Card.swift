@@ -1,3 +1,9 @@
+// Copyright © 2017 Jack Maloney. All Rights Reserved.
+//
+// This Source Code Form is subject to the terms of the Mozilla Public
+// License, v. 2.0. If a copy of the MPL was not distributed with this
+// file, You can obtain one at http://mozilla.org/MPL/2.0/.
+
 import Foundation
 
 class Card {
@@ -12,7 +18,7 @@ class Card {
         case shaman
         case warlock
         case warrior
-        
+
         public func getName() -> String {
             switch self {
             case .neutral: return "Neutral"
@@ -27,7 +33,7 @@ class Card {
             case .warrior: return "Warrior"
             }
         }
-        
+
         public func getSymbol() -> Character {
             switch self {
             case .neutral: return "¤"
@@ -43,7 +49,7 @@ class Card {
             }
         }
     }
-    
+
     var name: String!
     var cost: Int!
     var cardClass: Card.Class!
@@ -66,7 +72,7 @@ class BloodfenRaptor: Minion {
         static let attack = 3
         static let health = 2
     }
-    
+
     public override init() {
         super.init()
         name = Constants.name
@@ -79,18 +85,13 @@ class BloodfenRaptor: Minion {
 }
 
 class Spell: Card {
-    
 }
 
 class Weapon: Card {
-    
 }
 
 class HeroPower: Card {
-    
 }
 
 class Hero: Card {
-    
 }
-
