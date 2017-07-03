@@ -35,13 +35,12 @@ class Game {
                               isGoingFirst: firstPlayer == 1,
                               interface: &interfacePlayer2,
                               deck: &deckPlayer2))
-
-        players[0].runMulligan()
-
-        
     }
 
     func start() {
+        players[0].runMulligan()
+        players[1].runMulligan()
+
         
     }
 }

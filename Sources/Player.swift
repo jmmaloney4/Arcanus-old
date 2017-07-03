@@ -24,9 +24,7 @@ class Player {
         self.deck = deck
         hand = deck.startingHand(ofSize: goFirst ? Rules.startingHandSizeGoFirst : Rules.startingHandSizeGoSecond)!
 
-        interface.player = self
-
-        print(interface.optionPrompt(["Hello 1", "Hello 2"], playability: [.no, .withEffect])!)
+        self.interface.player = self
     }
 
     /// Returns "Player One" if player one or "Player Two" if player two.
@@ -43,9 +41,18 @@ class Player {
     }
 
     func runMulligan() {
+        interface.startingMulligan()
+        let newHand = Hand([])
         for c in hand {
-            var b = interface.mulliganCard(c)
+            if interface.mulliganCard(c) {
+                newHand.addCard(deck.draw()!)
+                deck.shuffleIn(c)
+            } else {
+                newHand.addCard(c)
+            }
         }
+        hand = newHand
+        interface.finishedMulligan()
     }
 }
 
@@ -54,12 +61,14 @@ protocol PlayerInterface {
 
     mutating func handleEvent(_ event: PlayerInterfaceEvent)
 
-    func mulliganCard(_ card: Card) -> Bool;
+    func startingMulligan()
+    func mulliganCard(_ card: Card) -> Bool
+    func finishedMulligan()
 
     func optionPrompt(_ options: [String], playability: [Card.Playability]?) -> Int?
 }
 
-struct CLIPlayer: PlayerInterface {
+class CLIPlayer: PlayerInterface {
 
     enum TextColor {
         case red
@@ -142,11 +151,19 @@ struct CLIPlayer: PlayerInterface {
         }
     }
 
+    func startingMulligan() {
+        print("Starting hand: \(player.hand)")
+    }
+
+    func finishedMulligan() {
+        print("New hand: \(player.hand)")
+    }
+
     func mulliganCard(_ card: Card) -> Bool {
         return boolPrompt("Mulligan \(card)")!;
     }
 
-    mutating func handleEvent(_ event: PlayerInterfaceEvent) {
+    func handleEvent(_ event: PlayerInterfaceEvent) {
         switch event {
         case .gameStarted:
             print("Game starting for \(player.playerString()), going \(player.goFirst ? "first" : "second")");

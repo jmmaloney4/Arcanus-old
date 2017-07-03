@@ -6,7 +6,7 @@
 
 import Foundation
 
-struct Deck: Sequence {
+class Deck: Sequence, CustomStringConvertible {
     private(set) public var contents: [Card]
     public var count: Int {
         get {
@@ -31,14 +31,18 @@ struct Deck: Sequence {
         }
     }
 
-    public mutating func draw() -> Card? {
+    public func draw() -> Card? {
         if contents.count == 0 {
             return nil
         }
         return contents.remove(at: generateRandomNumber(upTo: contents.count - 1))
     }
 
-    public mutating func startingHand(ofSize size: Int) -> Hand? {
+    public func shuffleIn(_ card: Card) {
+        contents.append(card)
+    }
+
+    public func startingHand(ofSize size: Int) -> Hand? {
         if size > self.count {
             return nil
         }
@@ -96,9 +100,11 @@ struct Deck: Sequence {
     func makeIterator() -> Deck.Iterator {
         return Deck.Iterator(withDeck: self)
     }
+
+    public var description: String { return contents.description }
 }
 
-struct Hand: Sequence {
+class Hand: Sequence, CustomStringConvertible {
     private(set) public var contents: [Card]
     public var count: Int {
         get {
@@ -117,18 +123,18 @@ struct Hand: Sequence {
         return contents[index]
     }
 
-    mutating func addCard(_ card: Card) {
+    func addCard(_ card: Card) {
         contents.append(card)
     }
 
     func makeIterator() -> Deck.Iterator {
         return Deck.Iterator(withHand: self)
     }
+
+    public var description: String { return contents.description }
 }
 
-
-
-struct Board {
+class Board {
     private var playerOneContents: [Minion]
     private var playerTwoContents: [Minion]
 
@@ -139,7 +145,7 @@ struct Board {
 
     /// Parameters:
     ///     - player: 0 for player one. 1 for player two.
-    public mutating func add(minion: Minion, atLocation index: Int, toPlayerSide player: Int) {
+    public func add(minion: Minion, atLocation index: Int, toPlayerSide player: Int) {
         switch player {
         case 0:
             playerOneContents.insert(minion, at: index)
