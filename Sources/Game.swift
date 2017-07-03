@@ -11,7 +11,11 @@ class Game {
     var players: [Player]
     var firstPlayer: Int!
 
-    init(playerOneInterface playerOneInterface: PlayerInterface, deck _: Deck, playerTwoInterface _: PlayerInterface, deck DeckPlayer2 _: Deck) {
+    init(playerOneInterface interfacePlayer1: PlayerInterface,
+         deck DeckPlayer1: Deck,
+         playerTwoInterface interfacePlayer2: PlayerInterface,
+         deck DeckPlayer2: Deck)
+    {
         firstPlayer = generateRandomNumber(upTo: 1)
         players = []
     }

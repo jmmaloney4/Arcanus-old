@@ -19,7 +19,10 @@ print(Card.Class.shaman.getSymbol())
 var p1 = CLIPlayer()
 var p2 = CLIPlayer()
 
-var game = Game(playerOneInterface: p1, deck: Deck(path: "mage")!, playerTwoInterface: p2, deck: Deck(path: "mage")!)
+var game = Game(playerOneInterface: p1,
+                deck: Deck(path: "mage")!,
+                playerTwoInterface: p2,
+                deck: Deck(path: "mage")!)
 game.start()
 
 var d = Deck(path: "mage")

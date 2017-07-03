@@ -13,7 +13,12 @@ struct Player {
     public private(set) var deck: Deck
     public private(set) var hand: Hand
 
-    init(isPlayerOne: Bool, isGoingFirst: Bool, interface: PlayerInterface, deck: Deck, startingHand: Hand) {
+    init(isPlayerOne: Bool,
+         isGoingFirst: Bool,
+         interface: PlayerInterface,
+         deck: Deck,
+         startingHand: Hand)
+    {
         self.isPlayerOne = isPlayerOne
         goFirst = isGoingFirst
         self.interface = interface
