@@ -50,6 +50,23 @@ class Card: CustomStringConvertible {
         }
     }
 
+    public enum Playability {
+        case no
+        case yes
+        case withEffect
+
+        func getSymbol() -> String {
+            switch self {
+            case .no:
+                return "✘"
+            case .yes:
+                return "✔"
+            case .withEffect:
+                return "▶︎"
+            }
+        }
+    }
+
     var name: String!
     var cost: Int!
     var cardClass: Card.Class!

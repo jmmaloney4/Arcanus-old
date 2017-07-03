@@ -6,6 +6,12 @@
 
 import Foundation
 
+struct Rules {
+    static let cardsInDeck: Int = 30
+    static let startingHandSizeGoFirst: Int = 3
+    static let startingHandSizeGoSecond: Int = 4
+}
+
 class Game {
     var players: [Player]
     var firstPlayer: Int!
@@ -34,5 +40,6 @@ class Game {
     }
 
     func start() {
+        
     }
 }
