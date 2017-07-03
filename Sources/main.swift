@@ -15,3 +15,5 @@ var p2 = CLIPlayer()
 
 var game = Game(playerOne: p1, playerTwo: p2)
 game.start()
+
+var d = Deck(path: "mage")
