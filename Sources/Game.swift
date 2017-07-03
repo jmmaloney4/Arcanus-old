@@ -36,6 +36,8 @@ class Game {
                               interface: &interfacePlayer2,
                               deck: &deckPlayer2))
 
+        players[0].runMulligan()
+
         
     }
 

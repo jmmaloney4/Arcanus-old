@@ -6,8 +6,8 @@
 
 import Foundation
 
-struct Deck {
-    private var contents: [Card]
+struct Deck: Sequence {
+    private(set) public var contents: [Card]
     public var count: Int {
         get {
             return contents.count
@@ -37,22 +37,75 @@ struct Deck {
         }
         return contents.remove(at: generateRandomNumber(upTo: contents.count - 1))
     }
-    
+
     public mutating func startingHand(ofSize size: Int) -> Hand? {
         if size > self.count {
             return nil
         }
-        
+
         var hand: [Card] = []
         for _ in 0..<size {
             hand.append(self.draw()!)
         }
         return Hand(hand)
     }
+
+    struct Iterator: IteratorProtocol {
+        private enum Iterable {
+            case deck(Deck)
+            case hand(Hand)
+        }
+
+        private var storage: Iterable
+        private var index: Int = 0
+
+        init(withDeck deck: Deck) {
+            storage = .deck(deck)
+        }
+
+        init(withHand hand: Hand) {
+            storage = .hand(hand)
+        }
+
+        mutating func next() -> Card? {
+            var count = 0
+            switch storage {
+            case .deck(let deck):
+                count = deck.count
+            case .hand(let hand):
+                count = hand.count
+            }
+
+            if index >= count {
+                return nil
+            }
+
+            var rv: Card
+            switch storage {
+            case .deck(let deck):
+                rv = deck.contents[index]
+            case .hand(let hand):
+                rv = hand.contents[index]
+            }
+
+            index += 1
+            return rv
+        }
+    }
+
+    func makeIterator() -> Deck.Iterator {
+        return Deck.Iterator(withDeck: self)
+    }
 }
 
-struct Hand {
-    private var contents: [Card]
+struct Hand: Sequence {
+    private(set) public var contents: [Card]
+    public var count: Int {
+        get {
+            return contents.count
+        }
+    }
+
     init(_ startingHand: [Card]) {
         contents = startingHand
     }
@@ -67,7 +120,13 @@ struct Hand {
     mutating func addCard(_ card: Card) {
         contents.append(card)
     }
+
+    func makeIterator() -> Deck.Iterator {
+        return Deck.Iterator(withHand: self)
+    }
 }
+
+
 
 struct Board {
     private var playerOneContents: [Minion]

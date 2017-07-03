@@ -26,7 +26,7 @@ class Player {
 
         interface.player = self
 
-        interface.optionPrompt(["Hello 1", "Hello 2"], playability: [.no, .withEffect])
+        print(interface.optionPrompt(["Hello 1", "Hello 2"], playability: [.no, .withEffect])!)
     }
 
     /// Returns "Player One" if player one or "Player Two" if player two.
@@ -41,6 +41,12 @@ class Player {
             break
         }
     }
+
+    func runMulligan() {
+        for c in hand {
+            var b = interface.mulliganCard(c)
+        }
+    }
 }
 
 protocol PlayerInterface {
@@ -48,7 +54,7 @@ protocol PlayerInterface {
 
     mutating func handleEvent(_ event: PlayerInterfaceEvent)
 
-    func mulliganCard(at index: Int) -> Bool;
+    func mulliganCard(_ card: Card) -> Bool;
 
     func optionPrompt(_ options: [String], playability: [Card.Playability]?) -> Int?
 }
@@ -136,8 +142,8 @@ struct CLIPlayer: PlayerInterface {
         }
     }
 
-    func mulliganCard(at index: Int) -> Bool {
-        return boolPrompt("Mulligan \(player.hand.card(at: index)!)")!;
+    func mulliganCard(_ card: Card) -> Bool {
+        return boolPrompt("Mulligan \(card)")!;
     }
 
     mutating func handleEvent(_ event: PlayerInterfaceEvent) {
