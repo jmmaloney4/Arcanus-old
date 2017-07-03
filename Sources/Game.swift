@@ -12,12 +12,23 @@ class Game {
     var firstPlayer: Int!
 
     init(playerOneInterface interfacePlayer1: PlayerInterface,
-         deck DeckPlayer1: Deck,
+         deck deckPlayer1: inout Deck,
          playerTwoInterface interfacePlayer2: PlayerInterface,
-         deck DeckPlayer2: Deck)
+         deck deckPlayer2: inout Deck)
     {
         firstPlayer = generateRandomNumber(upTo: 1)
         players = []
+        
+        players.append(Player(isPlayerOne: true,
+                              isGoingFirst: firstPlayer == 0,
+                              interface: interfacePlayer1,
+                              deck: &deckPlayer1))
+
+        players.append(Player(isPlayerOne: false,
+                              isGoingFirst: firstPlayer == 1,
+                              interface: interfacePlayer2,
+                              deck: &deckPlayer2))
+
     }
 
     func start() {

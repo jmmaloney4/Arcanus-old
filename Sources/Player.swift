@@ -16,14 +16,14 @@ struct Player {
     init(isPlayerOne: Bool,
          isGoingFirst: Bool,
          interface: PlayerInterface,
-         deck: Deck,
-         startingHand: Hand)
+         deck: inout Deck)
     {
         self.isPlayerOne = isPlayerOne
         goFirst = isGoingFirst
         self.interface = interface
         self.deck = deck
-        hand = startingHand
+        hand = deck.startingHand(ofSize: goFirst ? Rules.startingHandSizeGoFirst : Rules.startingHandSizeGoSecond)!
+        
     }
 
     /// Returns "Player One" if player one or "Player Two" if player two.

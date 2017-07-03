@@ -8,6 +8,11 @@ import Foundation
 
 struct Deck {
     private var contents: [Card]
+    public var count: Int {
+        get {
+            return contents.count
+        }
+    }
 
     init?(path: String) {
         guard let fileData = try? String(contentsOfFile: path, encoding: .utf8) else {
@@ -32,11 +37,23 @@ struct Deck {
         }
         return contents.remove(at: generateRandomNumber(upTo: contents.count - 1))
     }
+    
+    public mutating func startingHand(ofSize size: Int) -> Hand? {
+        if size > self.count {
+            return nil
+        }
+        
+        var hand: [Card] = []
+        for _ in 0..<size {
+            hand.append(self.draw()!)
+        }
+        return Hand(hand)
+    }
 }
 
 struct Hand {
     private var contents: [Card]
-    init(startingHand: [Card]) {
+    init(_ startingHand: [Card]) {
         contents = startingHand
     }
 
