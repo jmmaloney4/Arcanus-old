@@ -57,7 +57,7 @@ struct Hand {
         contents = startingHand
     }
 
-    func getCard(at index: Int) -> Card? {
+    func card(at index: Int) -> Card? {
         if index >= contents.count {
             return nil
         }
@@ -66,5 +66,28 @@ struct Hand {
 
     mutating func addCard(_ card: Card) {
         contents.append(card)
+    }
+}
+
+struct Board {
+    private var playerOneContents: [Minion]
+    private var playerTwoContents: [Minion]
+
+    init() {
+        playerOneContents = []
+        playerTwoContents = []
+    }
+
+    /// Parameters:
+    ///     - player: 0 for player one. 1 for player two.
+    public mutating func add(minion: Minion, atLocation index: Int, toPlayerSide player: Int) {
+        switch player {
+        case 0:
+            playerOneContents.insert(minion, at: index)
+        case 1:
+            playerTwoContents.insert(minion, at: index)
+        default:
+            break
+        }
     }
 }

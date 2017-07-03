@@ -10,14 +10,14 @@ if CommandLine.arguments.count < 3 {
     print("Usage: \(CommandLine.arguments[0]) [deck player1] [deck player2]")
 }
 
-var p1 = CLIPlayer()
-var p2 = CLIPlayer()
+var p1: PlayerInterface = CLIPlayer()
+var p2: PlayerInterface = CLIPlayer()
 
 var deck1 = Deck(path: CommandLine.arguments[1])!
 var deck2 = Deck(path: CommandLine.arguments[2])!
 
-var game = Game(playerOneInterface: p1,
+var game = Game(playerOneInterface: &p1,
                 deck: &deck1,
-                playerTwoInterface: p2,
+                playerTwoInterface: &p2,
                 deck: &deck2)
 game.start()

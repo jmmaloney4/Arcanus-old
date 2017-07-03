@@ -6,7 +6,7 @@
 
 import Foundation
 
-class Card {
+class Card: CustomStringConvertible {
     public enum Class {
         case neutral
         case druid
@@ -55,12 +55,15 @@ class Card {
     var cardClass: Card.Class!
     var text: String!
     internal init() {}
+
+    public var description: String { return "\(name!) (\(cost!) Mana) [\(text!)]" }
 }
 
 class Minion: Card {
     var attack: Int!
     var health: Int!
     internal override init() {}
+    public override var description: String { return "\(name!) (\(cost!) Mana, \(attack!)/\(health!)) [\(text!)]" }
 }
 
 class BloodfenRaptor: Minion {

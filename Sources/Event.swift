@@ -34,4 +34,5 @@ enum PlayerEvent {
 }
 
 enum PlayerInterfaceEvent {
+    case gameStarted
 }

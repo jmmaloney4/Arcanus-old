@@ -7,28 +7,30 @@
 import Foundation
 
 class Game {
-
     var players: [Player]
     var firstPlayer: Int!
+    var board: Board
 
-    init(playerOneInterface interfacePlayer1: PlayerInterface,
+    init(playerOneInterface interfacePlayer1: inout PlayerInterface,
          deck deckPlayer1: inout Deck,
-         playerTwoInterface interfacePlayer2: PlayerInterface,
+         playerTwoInterface interfacePlayer2: inout PlayerInterface,
          deck deckPlayer2: inout Deck)
     {
         firstPlayer = generateRandomNumber(upTo: 1)
         players = []
+        board = Board()
         
         players.append(Player(isPlayerOne: true,
                               isGoingFirst: firstPlayer == 0,
-                              interface: interfacePlayer1,
+                              interface: &interfacePlayer1,
                               deck: &deckPlayer1))
 
         players.append(Player(isPlayerOne: false,
                               isGoingFirst: firstPlayer == 1,
-                              interface: interfacePlayer2,
+                              interface: &interfacePlayer2,
                               deck: &deckPlayer2))
 
+        
     }
 
     func start() {
