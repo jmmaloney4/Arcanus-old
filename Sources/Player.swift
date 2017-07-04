@@ -46,6 +46,7 @@ class Player {
 
         self.game = game
         self.interface.player = self
+        self.deck.player = self
     }
 
     /// Returns "Player One" if player one or "Player Two" if player two.
@@ -67,7 +68,7 @@ class Player {
         let newHand = Hand([])
         for c in hand {
             if interface.mulliganCard(c) {
-                newHand.addCard(deck.draw()!)
+                newHand.addCard(deck.draw(triggerEvent: false)!)
                 deck.shuffleIn(c)
             } else {
                 newHand.addCard(c)
@@ -99,14 +100,17 @@ class Player {
         lockedMana = overloadedMana
         overloadedMana = 0
 
+        Event.startingTurn(turn, by: self).raise()
+
         while true {
             let action = interface.nextAction()
             switch action {
             case .playCard(let index):
-                print(hand.card(at: index)!)
+                Event.cardPlayed(hand.card(at: index)!, by: self).raise()
 
                 break
             case .endTurn:
+                Event.endingTurn(turn, by: self).raise()
                 return
             default:
                 break
@@ -118,12 +122,13 @@ class Player {
 protocol PlayerInterface {
     weak var player: Player! { get set }
 
-    mutating func handleEvent(_ event: PlayerInterfaceEvent)
-
     func startingMulligan()
     func mulliganCard(_ card: Card) -> Bool
     func finishedMulligan()
 
     func optionPrompt(_ options: [String], playability: [Card.Playability]?) -> Int
     func nextAction() -> Player.Action
+
+    func eventRaised(_ event: Event)
+    func finishedProcessingEvent(_ event: Event)
 }

@@ -178,11 +178,11 @@ class CLIPlayer: PlayerInterface {
         return .endTurn
     }
 
+    func eventRaised(_ event: Event) {
+        
+    }
 
-    func handleEvent(_ event: PlayerInterfaceEvent) {
-        switch event {
-        case .gameStarted:
-            print("Game starting for \(player.playerString()), going \(player.goingFirst ? "first" : "second")");
-        }
+    func finishedProcessingEvent(_ event: Event) {
+
     }
 }

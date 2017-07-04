@@ -13,6 +13,7 @@ class Deck: Sequence, CustomStringConvertible {
             return contents.count
         }
     }
+    public weak var player: Player!
 
     init?(path: String) {
         guard let fileData = try? String(contentsOfFile: path, encoding: .utf8) else {
@@ -31,11 +32,15 @@ class Deck: Sequence, CustomStringConvertible {
         }
     }
 
-    public func draw() -> Card? {
+    public func draw(triggerEvent: Bool = true) -> Card? {
         if contents.count == 0 {
             return nil
         }
-        return contents.remove(at: generateRandomNumber(upTo: contents.count - 1))
+        let rv = contents.remove(at: generateRandomNumber(upTo: contents.count - 1))
+        if triggerEvent {
+            Event.cardDrawn(rv, by: player).raise()
+        }
+        return rv
     }
 
     public func shuffleIn(_ card: Card) {
@@ -49,7 +54,7 @@ class Deck: Sequence, CustomStringConvertible {
 
         var hand: [Card] = []
         for _ in 0..<size {
-            hand.append(self.draw()!)
+            hand.append(self.draw(triggerEvent: false)!)
         }
         return Hand(hand)
     }

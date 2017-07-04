@@ -36,3 +36,15 @@ enum PlayerEvent {
 enum PlayerInterfaceEvent {
     case gameStarted
 }
+
+enum Event {
+    case startingTurn(Int, by: Player)
+    case endingTurn(Int, by: Player)
+    case cardDrawn(Card, by: Player)
+    case cardPlayed(Card, by: Player)
+    
+
+    func raise() {
+
+    }
+}
