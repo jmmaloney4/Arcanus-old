@@ -29,6 +29,15 @@ class Player {
     public private(set) var lockedMana: Int = 0;
     public private(set) var overloadedMana: Int = 0;
 
+    public func spendMana(_ manaToSpend: Int) -> Bool {
+        if self.mana < manaToSpend || manaToSpend < 0 {
+            return false
+        } else {
+            usedMana += manaToSpend
+            return true
+        }
+    }
+
     public weak var game: Game!;
 
     init(isPlayerOne: Bool,
@@ -91,6 +100,23 @@ class Player {
         case endTurn
     }
 
+    func playabilityOfHand() -> Card.Playability {
+        var rv: Card.Playability = .no
+        for card in hand {
+            switch card.playabilityForPlayer(self) {
+            case .yes:
+                rv = .yes
+            case .withEffect:
+                if rv == .no {
+                    rv = .withEffect
+                }
+            default:
+                break
+            }
+        }
+        return rv
+    }
+
     func takeTurn(_ turn: Int) {
         if manaCrystals < Rules.maxManaCrystals {
             manaCrystals += 1
@@ -106,7 +132,12 @@ class Player {
             let action = interface.nextAction()
             switch action {
             case .playCard(let index):
-                Event.cardPlayed(hand.card(at: index)!, by: self).raise()
+                let card = hand.removeCard(at: index)!
+                if !spendMana(card.cost) {
+                    assert(false, "Failed to play card \(card)")
+                }
+
+
 
                 break
             case .endTurn:
@@ -126,7 +157,6 @@ protocol PlayerInterface {
     func mulliganCard(_ card: Card) -> Bool
     func finishedMulligan()
 
-    func optionPrompt(_ options: [String], playability: [Card.Playability]?) -> Int
     func nextAction() -> Player.Action
 
     func eventRaised(_ event: Event)

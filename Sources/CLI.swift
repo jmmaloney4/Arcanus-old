@@ -6,21 +6,6 @@
 
 import Foundation
 
-fileprivate func nameForCardClass(_ cardClass: Card.Class) -> String {
-    switch cardClass {
-    case .neutral: return "Neutral"
-    case .druid: return "Druid"
-    case .hunter: return "Hunter"
-    case .mage: return "Mage"
-    case .paladin: return "Paladin"
-    case .priest: return "Priest"
-    case .rouge: return "Rouge"
-    case .shaman: return "Shaman"
-    case .warlock: return "Warlock"
-    case .warrior: return "Warrior"
-    }
-}
-
 fileprivate func symbolForCardClass(_ cardClass: Card.Class) -> Character {
     switch cardClass {
     case .neutral: return "¤"
@@ -91,7 +76,8 @@ class CLIPlayer: PlayerInterface {
         }
     }
 
-    func optionPrompt(_ options: [String], playability passedPlayability: [Card.Playability]? = nil) -> Int {
+    func optionPrompt(_ options: [String],
+                      playability passedPlayability: [Card.Playability]? = nil) -> Int {
         var playability: [Card.Playability]
         if passedPlayability == nil {
             playability = Array(repeating: Card.Playability.yes, count: options.count)
@@ -139,27 +125,11 @@ class CLIPlayer: PlayerInterface {
         return boolPrompt("Mulligan \(card)")!;
     }
 
-    func playabilityOfHand() -> Card.Playability {
-        var rv: Card.Playability = .no
-        for card in player.hand {
-            switch card.playabilityForPlayer(player) {
-            case .yes:
-                rv = .yes
-            case .withEffect:
-                if rv == .no {
-                    rv = .withEffect
-                }
-            default:
-                break
-            }
-        }
-        return rv
-    }
-
     func nextAction() -> Player.Action {
         print("Avaliable: \(player.mana), Used: \(player.usedMana), Locked: \(player.lockedMana), Overloaded: \(player.overloadedMana)")
 
-        switch (optionPrompt(["Play Card", "Use Hero Power", "Minion Combat", "Hero Combat", "End Turn"], playability: [playabilityOfHand(), .no, .no, .no, .withEffect])) {
+        switch (optionPrompt(["Play Card", "Use Hero Power", "Minion Combat", "Hero Combat", "End Turn"],
+                             playability: [player.playabilityOfHand(), .no, .no, .no, .withEffect])) {
         case 0:
             let index = optionPrompt(player.hand.contents.map({ $0.name }),
                                      playability: player.hand.contents.map({$0.playabilityForPlayer(player)}));
