@@ -74,6 +74,13 @@ class Card: CustomStringConvertible {
     internal init() {}
 
     public var description: String { return "\(name!) (\(cost!) Mana) [\(text!)]" }
+
+    func playabilityForPlayer(_ player: Player) -> Playability {
+        if player.mana >= cost {
+            return .yes
+        }
+        return .no
+    }
 }
 
 class Minion: Card {
@@ -105,6 +112,23 @@ class BloodfenRaptor: Minion {
 }
 
 class Spell: Card {
+}
+
+class TheCoin: Spell {
+    struct Constants {
+        static let name = "The Coin"
+        static let cost = 0
+        static let cardClass = Card.Class.neutral
+        static let text = "Gain 1 Mana Crystal this turn only."
+    }
+
+    public override init() {
+        super.init()
+        name = Constants.name
+        cost = Constants.cost
+        cardClass = Constants.cardClass
+        text = Constants.text
+    }
 }
 
 class Weapon: Card {

@@ -8,22 +8,41 @@ import Foundation
 
 class Player {
     public private(set) var isPlayerOne: Bool
-    public private(set) var goFirst: Bool
+    public private(set) var goingFirst: Bool
     public private(set) var interface: PlayerInterface
     public private(set) var deck: Deck
     public private(set) var hand: Hand
 
+    public var mana: Int {
+        get {
+            var rv = manaCrystals
+            rv += bonusMana
+            rv -= usedMana
+            rv -= lockedMana
+            return rv
+        }
+    };
+    public private(set) var usedMana: Int = 0;
+    public private(set) var manaCrystals: Int = 0;
+    public private(set) var bonusMana: Int = 0;
+    public private(set) var lockedMana: Int = 0;
+    public private(set) var overloadedMana: Int = 0;
+
+    public weak var game: Game!;
+
     init(isPlayerOne: Bool,
          isGoingFirst: Bool,
          interface: inout PlayerInterface,
-         deck: inout Deck)
+         deck: inout Deck,
+         game: Game)
     {
         self.isPlayerOne = isPlayerOne
-        goFirst = isGoingFirst
+        goingFirst = isGoingFirst
         self.interface = interface
         self.deck = deck
-        hand = deck.startingHand(ofSize: goFirst ? Rules.startingHandSizeGoFirst : Rules.startingHandSizeGoSecond)!
+        hand = deck.startingHand(ofSize: goingFirst ? Rules.startingHandSizeGoFirst : Rules.startingHandSizeGoSecond)!
 
+        self.game = game
         self.interface.player = self
     }
 
@@ -42,6 +61,7 @@ class Player {
 
     func runMulligan() {
         interface.startingMulligan()
+
         let newHand = Hand([])
         for c in hand {
             if interface.mulliganCard(c) {
@@ -51,8 +71,43 @@ class Player {
                 newHand.addCard(c)
             }
         }
+
+        if !goingFirst {
+            newHand.addCard(TheCoin())
+        }
+
         hand = newHand
         interface.finishedMulligan()
+    }
+
+    enum Action {
+        case playCard(Card)
+        case heroPower
+        case minionCombat
+        case heroCombat
+        case endTurn
+    }
+
+    func takeTurn(_ turn: Int) {
+        if manaCrystals < Rules.maxManaCrystals {
+            manaCrystals += 1
+        }
+        usedMana = 0
+        bonusMana = 0
+        lockedMana = overloadedMana
+        overloadedMana = 0
+
+        while true {
+            let action = interface.nextAction()
+            switch action {
+            case .playCard(let card):
+                print("Playing a \(card)")
+            case .endTurn:
+                return
+            default:
+                break
+            }
+        }
     }
 }
 
@@ -65,7 +120,8 @@ protocol PlayerInterface {
     func mulliganCard(_ card: Card) -> Bool
     func finishedMulligan()
 
-    func optionPrompt(_ options: [String], playability: [Card.Playability]?) -> Int?
+    func optionPrompt(_ options: [String], playability: [Card.Playability]?) -> Int
+    func nextAction() -> Player.Action
 }
 
 class CLIPlayer: PlayerInterface {
@@ -74,18 +130,6 @@ class CLIPlayer: PlayerInterface {
         case red
         case green
         case yellow
-
-        /*
-        public static let ANSI_BLACK = "\u{001B}[30m";
-        public static let ANSI_RED = "\u{001B}[31m";
-        public static let ANSI_GREEN = "\u{001B}[32m";
-        public static let ANSI_YELLOW = "\u{001B}[33m";
-        public static let ANSI_BLUE = "\u{001B}[34m";
-        public static let ANSI_PURPLE = "\u{001B}[35m";
-        public static let ANSI_CYAN = "\u{001B}[36m";
-        public static let ANSI_WHITE = "\u{001B}[37m";
-        public static let ANSI_CLEAR = "\u{033}[2J\033[;H"
-        */
 
         func colorString(_ string: String) -> String {
             var rv = ""
@@ -113,16 +157,20 @@ class CLIPlayer: PlayerInterface {
                 return nil
             }
 
-            if line.hasPrefix("Y") || line.hasPrefix("y") {
+            switch line {
+            case "y", "Y", "yes", "Yes","YES":
                 return true
-            } else if line.hasPrefix("N") || line.hasPrefix("n") {
+            case "n", "N", "no", "No","NO":
                 return false
+            default:
+                continue;
             }
         }
     }
 
-    func optionPrompt(_ options: [String], playability: [Card.Playability]? = nil) -> Int? {
+    func optionPrompt(_ options: [String], playability: [Card.Playability]? = nil) -> Int {
         for k in 0..<options.count {
+            print(k, terminator: " ")
             if playability != nil {
                 switch playability![k] {
                 case .yes:
@@ -139,14 +187,14 @@ class CLIPlayer: PlayerInterface {
         while true {
             print("[0-\(options.count - 1)]", terminator: ": ")
             guard let line = readLine() else {
-                return nil
+                continue
             }
 
             let rv = Int(line)
             if rv == nil || rv! < 0 || rv! > options.count - 1 {
                 continue
             } else {
-                return rv
+                return rv!
             }
         }
     }
@@ -163,10 +211,33 @@ class CLIPlayer: PlayerInterface {
         return boolPrompt("Mulligan \(card)")!;
     }
 
+    func nextAction() -> Player.Action {
+        print("Avaliable: \(player.mana), Used: \(player.usedMana), Locked: \(player.lockedMana), Overloaded: \(player.overloadedMana)")
+
+        switch (optionPrompt(["Play Card", "Use Hero Power", "Minion Combat", "Hero Combat", "End Turn"], playability: [.yes, .no, .no, .no, .withEffect])) {
+        case 0:
+            let index = optionPrompt(player.hand.contents.map({ $0.name }));
+            return .playCard(player.hand.card(at: index)!)
+        case 1:
+            return .heroPower
+        case 2:
+            return .minionCombat
+        case 3:
+            return .heroCombat
+        case 4:
+            return .endTurn
+        default:
+            // Error
+            assert(false, "Shouldn't reach this switch case")
+        }
+        return .endTurn
+    }
+
+
     func handleEvent(_ event: PlayerInterfaceEvent) {
         switch event {
         case .gameStarted:
-            print("Game starting for \(player.playerString()), going \(player.goFirst ? "first" : "second")");
+            print("Game starting for \(player.playerString()), going \(player.goingFirst ? "first" : "second")");
         }
     }
 }
