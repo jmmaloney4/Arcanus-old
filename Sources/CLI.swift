@@ -6,7 +6,7 @@
 
 import Foundation
 
-public func nameForCardClass(_ cardClass: Card.Class) -> String {
+fileprivate func nameForCardClass(_ cardClass: Card.Class) -> String {
     switch cardClass {
     case .neutral: return "Neutral"
     case .druid: return "Druid"
@@ -21,7 +21,7 @@ public func nameForCardClass(_ cardClass: Card.Class) -> String {
     }
 }
 
-public func symbolForCardClass(_ cardClass: Card.Class) -> Character {
+fileprivate func symbolForCardClass(_ cardClass: Card.Class) -> Character {
     switch cardClass {
     case .neutral: return "¤"
     case .druid: return "🌿"
@@ -36,7 +36,7 @@ public func symbolForCardClass(_ cardClass: Card.Class) -> Character {
     }
 }
 
-public func symbolForCardPlayability(_ playability: Card.Playability) -> String {
+fileprivate func symbolForCardPlayability(_ playability: Card.Playability) -> String {
     switch playability {
     case .no:
         return "✘"
@@ -47,7 +47,7 @@ public func symbolForCardPlayability(_ playability: Card.Playability) -> String 
     }
 }
 
-enum TextColor {
+fileprivate enum TextColor {
     case red
     case green
     case yellow
@@ -91,18 +91,23 @@ class CLIPlayer: PlayerInterface {
         }
     }
 
-    func optionPrompt(_ options: [String], playability: [Card.Playability]? = nil) -> Int {
+    func optionPrompt(_ options: [String], playability passedPlayability: [Card.Playability]? = nil) -> Int {
+        var playability: [Card.Playability]
+        if passedPlayability == nil {
+            playability = Array(repeating: Card.Playability.yes, count: options.count)
+        } else {
+            playability = passedPlayability!
+        }
+
         for k in 0..<options.count {
             print(k, terminator: " ")
-            if playability != nil {
-                switch playability![k] {
-                case .yes:
-                    print(TextColor.green.colorString(symbolForCardPlayability(playability![k])), terminator: " ")
-                case .no:
-                    print(TextColor.red.colorString(symbolForCardPlayability(playability![k])), terminator: " ")
-                case .withEffect:
-                    print(TextColor.yellow.colorString(symbolForCardPlayability(playability![k])), terminator: " ")
-                }
+            switch playability[k] {
+            case .yes:
+                print(TextColor.green.colorString(symbolForCardPlayability(playability[k])), terminator: " ")
+            case .no:
+                print(TextColor.red.colorString(symbolForCardPlayability(playability[k])), terminator: " ")
+            case .withEffect:
+                print(TextColor.yellow.colorString(symbolForCardPlayability(playability[k])), terminator: " ")
             }
             print(options[k])
         }
@@ -114,7 +119,7 @@ class CLIPlayer: PlayerInterface {
             }
 
             let rv = Int(line)
-            if rv == nil || rv! < 0 || rv! > options.count - 1 {
+            if rv == nil || rv! < 0 || rv! > options.count - 1 || playability[rv!] == .no {
                 continue
             } else {
                 return rv!
@@ -134,13 +139,30 @@ class CLIPlayer: PlayerInterface {
         return boolPrompt("Mulligan \(card)")!;
     }
 
+    func playabilityOfHand() -> Card.Playability {
+        var rv: Card.Playability = .no
+        for card in player.hand {
+            switch card.playabilityForPlayer(player) {
+            case .yes:
+                rv = .yes
+            case .withEffect:
+                if rv == .no {
+                    rv = .withEffect
+                }
+            default:
+                break
+            }
+        }
+        return rv
+    }
+
     func nextAction() -> Player.Action {
         print("Avaliable: \(player.mana), Used: \(player.usedMana), Locked: \(player.lockedMana), Overloaded: \(player.overloadedMana)")
 
-        switch (optionPrompt(["Play Card", "Use Hero Power", "Minion Combat", "Hero Combat", "End Turn"], playability: [.yes, .no, .no, .no, .withEffect])) {
+        switch (optionPrompt(["Play Card", "Use Hero Power", "Minion Combat", "Hero Combat", "End Turn"], playability: [playabilityOfHand(), .no, .no, .no, .withEffect])) {
         case 0:
             let index = optionPrompt(player.hand.contents.map({ $0.name }));
-            return .playCard(player.hand.card(at: index)!)
+            return .playCard(index: index)
         case 1:
             return .heroPower
         case 2:

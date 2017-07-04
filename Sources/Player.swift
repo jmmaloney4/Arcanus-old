@@ -12,6 +12,7 @@ class Player {
     public private(set) var interface: PlayerInterface
     public private(set) var deck: Deck
     public private(set) var hand: Hand
+    public private(set) var board: Board
 
     public var mana: Int {
         get {
@@ -41,6 +42,7 @@ class Player {
         self.interface = interface
         self.deck = deck
         hand = deck.startingHand(ofSize: goingFirst ? Rules.startingHandSizeGoFirst : Rules.startingHandSizeGoSecond)!
+        board = Board()
 
         self.game = game
         self.interface.player = self
@@ -81,7 +83,7 @@ class Player {
     }
 
     enum Action {
-        case playCard(Card)
+        case playCard(index: Int)
         case heroPower
         case minionCombat
         case heroCombat
@@ -100,8 +102,10 @@ class Player {
         while true {
             let action = interface.nextAction()
             switch action {
-            case .playCard(let card):
-                print("Playing a \(card)")
+            case .playCard(let index):
+                print(hand.card(at: index)!)
+
+                break
             case .endTurn:
                 return
             default:
