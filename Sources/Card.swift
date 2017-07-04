@@ -64,7 +64,11 @@ public class Card: CustomStringConvertible {
         var set: Set
         var text: String
 
-        init(name: String, cost: Int, cardClass: Class, set: Set, text: String) {
+        init(name: String,
+             cost: Int,
+             cardClass: Class,
+             set: Set,
+             text: String) {
             self.name = name
             self.cost = cost
             self.cardClass = cardClass

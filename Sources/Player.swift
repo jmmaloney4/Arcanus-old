@@ -93,7 +93,7 @@ class Player {
     }
 
     enum Action {
-        case playCard(index: Int)
+        case playCard(index: Int, location: Int?, target: Card?)
         case heroPower
         case minionCombat
         case heroCombat
@@ -131,13 +131,17 @@ class Player {
         while true {
             let action = interface.nextAction()
             switch action {
-            case .playCard(let index):
+            case .playCard(let index, let location, let target):
                 let card = hand.removeCard(at: index)!
                 if !spendMana(card.cost) {
                     assert(false, "Failed to play card \(card)")
                 }
 
-
+                if let minion = card as? Minion {
+                    board.add(minion: minion, at: location!)
+                } else if let spell = card as? Spell {
+                    
+                }
 
                 break
             case .endTurn:
