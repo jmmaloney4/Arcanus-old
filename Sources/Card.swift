@@ -6,7 +6,7 @@
 
 import Foundation
 
-class Card: CustomStringConvertible {
+public class Card: CustomStringConvertible {
     public enum Class {
         case neutral
         case druid
@@ -18,53 +18,12 @@ class Card: CustomStringConvertible {
         case shaman
         case warlock
         case warrior
-
-        public func getName() -> String {
-            switch self {
-            case .neutral: return "Neutral"
-            case .druid: return "Druid"
-            case .hunter: return "Hunter"
-            case .mage: return "Mage"
-            case .paladin: return "Paladin"
-            case .priest: return "Priest"
-            case .rouge: return "Rouge"
-            case .shaman: return "Shaman"
-            case .warlock: return "Warlock"
-            case .warrior: return "Warrior"
-            }
-        }
-
-        public func getSymbol() -> Character {
-            switch self {
-            case .neutral: return "¤"
-            case .druid: return "🌿"
-            case .hunter: return "🏹"
-            case .mage: return "🔥"
-            case .paladin: return "🔨"
-            case .priest: return "✜"
-            case .rouge: return "⚔️"
-            case .shaman: return "🌋"
-            case .warlock: return "🖐️"
-            case .warrior: return "🗡"
-            }
-        }
     }
 
     public enum Playability {
         case no
         case yes
         case withEffect
-
-        func getSymbol() -> String {
-            switch self {
-            case .no:
-                return "✘"
-            case .yes:
-                return "✔"
-            case .withEffect:
-                return "▶︎"
-            }
-        }
     }
 
     var name: String!
@@ -83,6 +42,7 @@ class Card: CustomStringConvertible {
     }
 }
 
+// MARK: - Minion
 class Minion: Card {
     var attack: Int!
     var health: Int!
@@ -111,6 +71,7 @@ class BloodfenRaptor: Minion {
     }
 }
 
+// MARK: - Spell
 class Spell: Card {
 }
 
@@ -131,6 +92,7 @@ class TheCoin: Spell {
     }
 }
 
+// MARK: - Weapon
 class Weapon: Card {
 }
 
