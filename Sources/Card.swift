@@ -20,15 +20,37 @@ public class Card: CustomStringConvertible {
         case warrior
     }
 
+    public enum Set {
+        case basic
+        case classic
+    }
+
     public enum Playability {
         case no
         case yes
         case withEffect
     }
 
+    struct Constants {
+        var name: String
+        var cost: Int
+        var cardClass: Class
+        var set: Set
+        var text: String
+
+        init(name: String, cost: Int, cardClass: Class, set: Set, text: String) {
+            self.name = name
+            self.cost = cost
+            self.cardClass = cardClass
+            self.set = set
+            self.text = text
+        }
+    }
+
     var name: String!
     var cost: Int!
     var cardClass: Card.Class!
+    var set: Set!
     var text: String!
     internal init() {}
 
@@ -40,34 +62,86 @@ public class Card: CustomStringConvertible {
         }
         return .no
     }
+
+    init(constants: Constants) {
+        self.name = constants.name
+        self.cost = constants.cost
+        self.cardClass = constants.cardClass
+        self.set = constants.set
+        self.text = constants.text
+    }
 }
 
 // MARK: - Minion
 class Minion: Card {
+    public struct MinionConstants {
+        var constants: Constants
+        var attack: Int
+        var health: Int
+
+        init(name: String,
+             cost: Int,
+             cardClass: Class,
+             set: Set,
+             text: String,
+             attack: Int,
+             health: Int)
+        {
+            self.constants = Constants(name: name, cost: cost, cardClass: cardClass, set: set, text: text)
+            self.attack = attack
+            self.health = health
+        }
+    }
+
     var attack: Int!
     var health: Int!
-    internal override init() {}
+    internal init(constants: MinionConstants) {
+        super.init(constants: constants.constants)
+        self.attack = constants.attack
+        self.health = constants.health
+    }
     public override var description: String { return "\(name!) (\(cost!) Mana, \(attack!)/\(health!)) [\(text!)]" }
 }
 
 class BloodfenRaptor: Minion {
-    struct Constants {
-        static let name = "Bloodfen Raptor"
-        static let cost = 2
-        static let cardClass = Card.Class.neutral
-        static let text = ""
-        static let attack = 3
-        static let health = 2
-    }
+    static let constants: MinionConstants = MinionConstants(name: "Bloodfen Raptor",
+                                                            cost: 2,
+                                                            cardClass: .neutral,
+                                                            set: .basic,
+                                                            text: "",
+                                                            attack: 3,
+                                                            health: 2)
 
-    public override init() {
-        super.init()
-        name = Constants.name
-        cost = Constants.cost
-        cardClass = Constants.cardClass
-        text = Constants.text
-        attack = Constants.attack
-        health = Constants.health
+    public init() {
+        super.init(constants: BloodfenRaptor.constants)
+    }
+}
+
+class KnifeJuggler: Minion {
+    static let constants: MinionConstants = MinionConstants(name: "Knife Juggler",
+                                                            cost: 2,
+                                                            cardClass: .neutral,
+                                                            set: .classic,
+                                                            text: "After you summon a minion, deal 1 damage to a random enemy.",
+                                                            attack: 2,
+                                                            health: 2)
+
+    public init() {
+        super.init(constants: KnifeJuggler.constants)
+    }
+}
+
+class StampedingKodo: Minion {
+    static let constants: MinionConstants = MinionConstants(name: "Stampeding Kodo",
+                                                            cost: 5,
+                                                            cardClass: .neutral,
+                                                            set: .classic,
+                                                            text: "Battlecry: Destroy a random enemy minion with 2 or less Attack.",
+                                                            attack: 3,
+                                                            health: 5)
+
+    public init() {
+        super.init(constants: StampedingKodo.constants)
     }
 }
 
@@ -80,6 +154,7 @@ class TheCoin: Spell {
         static let name = "The Coin"
         static let cost = 0
         static let cardClass = Card.Class.neutral
+        static let set = Card.Set.basic
         static let text = "Gain 1 Mana Crystal this turn only."
     }
 
@@ -88,6 +163,7 @@ class TheCoin: Spell {
         name = Constants.name
         cost = Constants.cost
         cardClass = Constants.cardClass
+        set = Constants.set
         text = Constants.text
     }
 }

@@ -161,7 +161,8 @@ class CLIPlayer: PlayerInterface {
 
         switch (optionPrompt(["Play Card", "Use Hero Power", "Minion Combat", "Hero Combat", "End Turn"], playability: [playabilityOfHand(), .no, .no, .no, .withEffect])) {
         case 0:
-            let index = optionPrompt(player.hand.contents.map({ $0.name }));
+            let index = optionPrompt(player.hand.contents.map({ $0.name }),
+                                     playability: player.hand.contents.map({$0.playabilityForPlayer(player)}));
             return .playCard(index: index)
         case 1:
             return .heroPower

@@ -13,6 +13,7 @@ class Deck: Sequence, CustomStringConvertible {
             return contents.count
         }
     }
+    public var description: String { return contents.description }
     public weak var player: Player!
 
     init?(path: String) {
@@ -27,8 +28,14 @@ class Deck: Sequence, CustomStringConvertible {
         }
 
         contents = []
-        for _ in 0 ... Rules.cardsInDeck {
+        for _ in 0 ..< 5 {
             contents.append(BloodfenRaptor())
+        }
+        for _ in 0 ..< 5 {
+            contents.append(KnifeJuggler())
+        }
+        for _ in 0 ..< 5 {
+            contents.append(StampedingKodo())
         }
     }
 

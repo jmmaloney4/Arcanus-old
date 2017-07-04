@@ -7,7 +7,7 @@
 import Foundation
 
 struct Rules {
-    static let cardsInDeck: Int = 30
+    static let cardsInDeck: Int = 15
     static let startingHandSizeGoFirst: Int = 3
     static let startingHandSizeGoSecond: Int = 4
     static let maxManaCrystals: Int = 10
