@@ -128,6 +128,13 @@ class Player {
 
         Event.startingTurn(turn, by: self).raise()
 
+        if let cardDrawn = deck.draw() {
+            hand.addCard(cardDrawn)
+        } else {
+            // Fatigue
+            print("Fatigue not yet implemented")
+        }
+
         while true {
             let action = interface.nextAction()
             switch action {

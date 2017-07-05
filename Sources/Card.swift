@@ -57,22 +57,36 @@ public class Card: CustomStringConvertible {
         case withEffect
     }
 
+    public enum PlayRequirements {
+        case requiresTargetToPlay
+        case requiresMinionTarget
+        case requiresFriendlyTarget
+        case requiresEnemyTarget
+        case requiresDamagedTarget
+        case requiresFrozenTarget
+        case requiresTargetWithRace(Minion.Race)
+        case requiresMinEnemyMinions(Int)
+    }
+
     struct Constants {
         var name: String
         var cost: Int
         var cardClass: Class
         var set: Set
+        var requirements: [PlayRequirements]
         var text: String
 
         init(name: String,
              cost: Int,
              cardClass: Class,
              set: Set,
+             requirements: [PlayRequirements],
              text: String) {
             self.name = name
             self.cost = cost
             self.cardClass = cardClass
             self.set = set
+            self.requirements = requirements
             self.text = text
         }
     }
@@ -82,7 +96,7 @@ public class Card: CustomStringConvertible {
     var cardClass: Card.Class!
     var set: Set!
     var text: String!
-    internal init() {}
+    var requirements: [PlayRequirements]!
 
     public var description: String { return "\(name!) (\(cost!) Mana) [\(text!)]" }
 
@@ -103,7 +117,7 @@ public class Card: CustomStringConvertible {
 }
 
 // MARK: - Minion
-class Minion: Card {
+public class Minion: Card {
     public struct MinionConstants {
         var constants: Constants
         var race: Race
@@ -114,12 +128,13 @@ class Minion: Card {
              cost: Int,
              cardClass: Class,
              set: Set,
+             requirements: [PlayRequirements],
              text: String,
              race: Race,
              attack: Int,
              health: Int)
         {
-            self.constants = Constants(name: name, cost: cost, cardClass: cardClass, set: set, text: text)
+            self.constants = Constants(name: name, cost: cost, cardClass: cardClass, set: set, requirements: requirements, text: text)
             self.race = race
             self.attack = attack
             self.health = health
@@ -157,6 +172,7 @@ class BloodfenRaptor: Minion {
                                                             cost: 2,
                                                             cardClass: .neutral,
                                                             set: .basic,
+                                                            requirements: [],
                                                             text: "",
                                                             race: .neutral,
                                                             attack: 3,
@@ -172,6 +188,7 @@ class KnifeJuggler: Minion {
                                                             cost: 2,
                                                             cardClass: .neutral,
                                                             set: .classic,
+                                                            requirements: [],
                                                             text: "After you summon a minion, deal 1 damage to a random enemy.",
                                                             race: .neutral,
                                                             attack: 2,
@@ -187,6 +204,7 @@ class StampedingKodo: Minion {
                                                             cost: 5,
                                                             cardClass: .neutral,
                                                             set: .classic,
+                                                            requirements: [],
                                                             text: "Battlecry: Destroy a random enemy minion with 2 or less Attack.",
                                                             race: .beast,
                                                             attack: 3,
@@ -194,6 +212,38 @@ class StampedingKodo: Minion {
 
     public init() {
         super.init(constants: StampedingKodo.constants)
+    }
+}
+
+class VioletTeacher: Minion {
+    static let constants: MinionConstants = MinionConstants(name: "Violet Teacher",
+                                                            cost: 4,
+                                                            cardClass: .neutral,
+                                                            set: .classic,
+                                                            requirements: [],
+                                                            text: "Whenever you cast a spell, summon a 1/1 Violet Apprentice.",
+                                                            race: .neutral,
+                                                            attack: 3,
+                                                            health: 5)
+
+    public init() {
+        super.init(constants: VioletTeacher.constants)
+    }
+}
+
+class VioletApprentice: Minion {
+    static let constants: MinionConstants = MinionConstants(name: "Violet Teacher",
+                                                            cost: 1,
+                                                            cardClass: .neutral,
+                                                            set: .classic,
+                                                            requirements: [],
+                                                            text: "",
+                                                            race: .neutral,
+                                                            attack: 1,
+                                                            health: 1)
+
+    public init() {
+        super.init(constants: VioletApprentice.constants)
     }
 }
 
@@ -206,9 +256,10 @@ class Spell: Card {
              cost: Int,
              cardClass: Class,
              set: Set,
+             requirements: [PlayRequirements],
              text: String)
         {
-            self.constants = Constants(name: name, cost: cost, cardClass: cardClass, set: set, text: text)
+            self.constants = Constants(name: name, cost: cost, cardClass: cardClass, set: set, requirements: requirements, text: text)
         }
     }
 
@@ -222,10 +273,37 @@ class TheCoin: Spell {
                                           cost: 0,
                                           cardClass: .neutral,
                                           set: .basic,
+                                          requirements: [],
                                           text: "Gain 1 Mana Crystal this turn only.")
 
     public init() {
         super.init(constants: TheCoin.constants)
+    }
+}
+
+class Frostbolt: Spell {
+    static let constants = SpellConstants(name: "Frostbolt",
+                                          cost: 3,
+                                          cardClass: .mage,
+                                          set: .basic,
+                                          requirements: [.requiresTargetToPlay],
+                                          text: "Deal 3 damage to a character and Freeze it.")
+
+    public init() {
+        super.init(constants: Frostbolt.constants)
+    }
+}
+
+class Cleave: Spell {
+    static let constants = SpellConstants(name: "Cleave",
+                                          cost: 2,
+                                          cardClass: .warrior,
+                                          set: .basic,
+                                          requirements: [.requiresMinEnemyMinions(2)],
+                                          text: "Deal 2 damage to two random enemy minions.")
+
+    public init() {
+        super.init(constants: Cleave.constants)
     }
 }
 

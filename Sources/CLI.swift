@@ -145,8 +145,8 @@ class CLIPlayer: PlayerInterface {
                     boardOptions.append("Between \(player.board.minion(at: k - 1)) and \(player.board.minion(at: k))")
                 }
                 boardOptions.append("Right Side of \(player.board.minion(at: player.board.count - 1))")
-
                 let location = optionPrompt(boardOptions)
+
                 return .playCard(index: index, location: location, target: nil)
             } else if card is Spell {
                 return .playCard(index: index, location: nil, target: nil)
