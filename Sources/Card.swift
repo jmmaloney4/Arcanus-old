@@ -149,6 +149,30 @@ public class Card: CustomStringConvertible {
         }
     }
 
+    fileprivate static let cardIndex: [String: () -> Card] = [
+        // Minions
+        BloodfenRaptor.constants.constants.name:{BloodfenRaptor()},
+        KnifeJuggler.constants.constants.name:{KnifeJuggler()},
+        StampedingKodo.constants.constants.name:{StampedingKodo()},
+        VioletTeacher.constants.constants.name:{VioletTeacher()},
+        VioletApprentice.constants.constants.name:{VioletApprentice()},
+
+        // Spells
+        TheCoin.constants.constants.name:{TheCoin()},
+        Frostbolt.constants.constants.name:{Frostbolt()},
+        Cleave.constants.constants.name:{Cleave()},
+        Shatter.constants.constants.name:{Shatter()},
+
+        Fireblast.constants.constants.name:{Fireblast()}]
+
+    fileprivate static func cardForName(_ name: String) -> Card? {
+        if let factoryFunc = Card.cardIndex[name] {
+            return factoryFunc()
+        } else {
+            return nil
+        }
+    }
+
     var name: String!
     var cost: Int!
     var cardClass: Card.Class!
@@ -176,7 +200,6 @@ public class Card: CustomStringConvertible {
     }
 }
 
-// MARK: - Minion
 public class Minion: Card {
     public struct MinionConstants {
         var constants: Constants
@@ -222,10 +245,12 @@ public class Minion: Card {
         }
     }
 
+
+
     var race: Race!
     var attack: Int!
     var health: Int!
-    internal init(constants: MinionConstants) {
+    fileprivate init(constants: MinionConstants) {
         super.init(constants: constants.constants)
         self.race = constants.race
         self.attack = constants.attack
@@ -242,6 +267,136 @@ public class Minion: Card {
     }
 }
 
+class Spell: Card {
+    public struct SpellConstants {
+        var constants: Constants
+
+        init(name: String,
+             cost: Int,
+             cardClass: Class,
+             set: Set,
+             rarity: Rarity,
+             requirements: [PlayRequirements],
+             text: String)
+        {
+            self.constants = Constants(name: name,
+                                       cost: cost,
+                                       cardClass: cardClass,
+                                       set: set,
+                                       rarity: rarity,
+                                       requirements: requirements,
+                                       text: text)
+        }
+    }
+
+    public static func spellForName(_ name: String) -> Spell? {
+        return Card.cardForName(name) as? Spell
+    }
+
+    fileprivate init(constants: SpellConstants) {
+        super.init(constants: constants.constants)
+    }
+}
+
+class Weapon: Card {
+    public struct WeaponConstants {
+        var constants: Constants
+
+        init(name: String,
+             cost: Int,
+             cardClass: Class,
+             set: Set,
+             rarity: Rarity,
+             requirements: [PlayRequirements],
+             text: String)
+        {
+            self.constants = Constants(name: name,
+                                       cost: cost,
+                                       cardClass: cardClass,
+                                       set: set,
+                                       rarity: rarity,
+                                       requirements: requirements,
+                                       text: text)
+        }
+    }
+
+    public static func weaponForName(_ name: String) -> Weapon? {
+        return Card.cardForName(name) as? Weapon
+    }
+
+    internal init(constants: WeaponConstants) {
+        super.init(constants: constants.constants)
+    }
+}
+
+class HeroPower: Card {
+    public struct HeroPowerConstants {
+        var constants: Constants
+
+        init(name: String,
+             cost: Int,
+             cardClass: Class,
+             set: Set,
+             rarity: Rarity,
+             requirements: [PlayRequirements],
+             text: String)
+        {
+            self.constants = Constants(name: name,
+                                       cost: cost,
+                                       cardClass: cardClass,
+                                       set: set,
+                                       rarity: rarity,
+                                       requirements: requirements,
+                                       text: text)
+        }
+    }
+
+    public static func heroPowerForName(_ name: String) -> HeroPower? {
+        return Card.cardForName(name) as? HeroPower
+    }
+
+    internal init(constants: HeroPowerConstants) {
+        super.init(constants: constants.constants)
+    }
+}
+
+class Hero: Card {
+    public struct HeroConstants {
+        var constants: Constants
+
+        init(name: String,
+             cost: Int,
+             cardClass: Class,
+             set: Set,
+             rarity: Rarity,
+             requirements: [PlayRequirements],
+             text: String)
+        {
+            self.constants = Constants(name: name,
+                                       cost: cost,
+                                       cardClass: cardClass,
+                                       set: set, rarity: rarity,
+                                       requirements: requirements,
+                                       text: text)
+        }
+    }
+
+    public static func heroForName(_ name: String) -> Hero? {
+        return Card.cardForName(name) as? Hero
+    }
+
+    internal init(constants: HeroConstants) {
+        super.init(constants: constants.constants)
+    }
+}
+
+// ----------------------------------------------------------------------------
+//
+// MARK: - Definitions
+//
+// ----------------------------------------------------------------------------
+
+// MARK: - Minion
 class BloodfenRaptor: Minion {
     static let constants: MinionConstants = MinionConstants(name: "Bloodfen Raptor",
                                                             cost: 2,
@@ -327,33 +482,6 @@ class VioletApprentice: Minion {
 }
 
 // MARK: - Spell
-class Spell: Card {
-    public struct SpellConstants {
-        var constants: Constants
-
-        init(name: String,
-             cost: Int,
-             cardClass: Class,
-             set: Set,
-             rarity: Rarity,
-             requirements: [PlayRequirements],
-             text: String)
-        {
-            self.constants = Constants(name: name,
-                                       cost: cost,
-                                       cardClass: cardClass,
-                                       set: set,
-                                       rarity: rarity,
-                                       requirements: requirements,
-                                       text: text)
-        }
-    }
-
-    internal init(constants: SpellConstants) {
-        super.init(constants: constants.constants)
-    }
-}
-
 class TheCoin: Spell {
     static let constants = SpellConstants(name: "The Coin",
                                           cost: 0,
@@ -410,61 +538,8 @@ class Shatter: Spell {
 }
 
 // MARK: - Weapon
-class Weapon: Card {
-    public struct WeaponConstants {
-        var constants: Constants
-
-        init(name: String,
-             cost: Int,
-             cardClass: Class,
-             set: Set,
-             rarity: Rarity,
-             requirements: [PlayRequirements],
-             text: String)
-        {
-            self.constants = Constants(name: name,
-                                       cost: cost,
-                                       cardClass: cardClass,
-                                       set: set,
-                                       rarity: rarity,
-                                       requirements: requirements,
-                                       text: text)
-        }
-    }
-
-    internal init(constants: WeaponConstants) {
-        super.init(constants: constants.constants)
-    }
-}
 
 // MARK: - HeroPower
-class HeroPower: Card {
-    public struct HeroPowerConstants {
-        var constants: Constants
-
-        init(name: String,
-             cost: Int,
-             cardClass: Class,
-             set: Set,
-             rarity: Rarity,
-             requirements: [PlayRequirements],
-             text: String)
-        {
-            self.constants = Constants(name: name,
-                                       cost: cost,
-                                       cardClass: cardClass,
-                                       set: set,
-                                       rarity: rarity,
-                                       requirements: requirements,
-                                       text: text)
-        }
-    }
-
-    internal init(constants: HeroPowerConstants) {
-        super.init(constants: constants.constants)
-    }
-}
-
 class Fireblast: HeroPower {
     static let constants = HeroPowerConstants(name: "Fireblast",
                                               cost: 2,
@@ -479,28 +554,3 @@ class Fireblast: HeroPower {
     }
 }
 
-class Hero: Card {
-    public struct HeroConstants {
-        var constants: Constants
-
-        init(name: String,
-             cost: Int,
-             cardClass: Class,
-             set: Set,
-             rarity: Rarity,
-             requirements: [PlayRequirements],
-             text: String)
-        {
-            self.constants = Constants(name: name,
-                                       cost: cost,
-                                       cardClass: cardClass,
-                                       set: set, rarity: rarity,
-                                       requirements: requirements,
-                                       text: text)
-        }
-    }
-    
-    internal init(constants: HeroConstants) {
-        super.init(constants: constants.constants)
-    }
-}
