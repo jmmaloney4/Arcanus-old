@@ -6,21 +6,6 @@
 
 import Foundation
 
-fileprivate func symbolForCardClass(_ cardClass: Card.Class) -> Character {
-    switch cardClass {
-    case .neutral: return "¤"
-    case .druid: return "🌿"
-    case .hunter: return "🏹"
-    case .mage: return "🔥"
-    case .paladin: return "🔨"
-    case .priest: return "✜"
-    case .rouge: return "⚔️"
-    case .shaman: return "🌋"
-    case .warlock: return "🖐️"
-    case .warrior: return "🗡"
-    }
-}
-
 fileprivate func symbolForCardPlayability(_ playability: Card.Playability) -> String {
     switch playability {
     case .no:
@@ -131,7 +116,7 @@ class CLIPlayer: PlayerInterface {
         switch (optionPrompt(["Play Card", "Use Hero Power", "Minion Combat", "Hero Combat", "End Turn"],
                              playability: [player.playabilityOfHand(), .no, .no, .no, .withEffect])) {
         case 0:
-            let index = optionPrompt(player.hand.contents.map({ $0.name }),
+            let index = optionPrompt(player.hand.contents.map({ $0.description }),
                                      playability: player.hand.contents.map({$0.playabilityForPlayer(player)}));
             let card = player.hand.card(at: index)!
 
@@ -146,6 +131,8 @@ class CLIPlayer: PlayerInterface {
                 }
                 boardOptions.append("Right Side of \(player.board.minion(at: player.board.count - 1))")
                 let location = optionPrompt(boardOptions)
+
+                
 
                 return .playCard(index: index, location: location, target: nil)
             } else if card is Spell {

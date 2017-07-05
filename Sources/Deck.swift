@@ -23,7 +23,7 @@ class Deck: Sequence, CustomStringConvertible {
 
         let entries = fileData.components(separatedBy: .newlines)
 
-        if entries.count < Rules.cardsInDeck {
+        if entries.count < Game.defaultRules.cardsInDeck {
             return nil
         }
 

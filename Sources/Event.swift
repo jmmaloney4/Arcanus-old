@@ -42,7 +42,6 @@ enum Event {
     case endingTurn(Int, by: Player)
     case cardDrawn(Card, by: Player)
     case cardPlayed(Card, by: Player)
-    
 
     func raise() {
 

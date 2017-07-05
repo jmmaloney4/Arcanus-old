@@ -35,17 +35,72 @@ public class Card: CustomStringConvertible {
                 }
             }
         }
+
+        public var symbol: Character {
+            get {
+                switch self {
+                case .neutral: return "¤"
+                case .druid: return "🌿"
+                case .hunter: return "🏹"
+                case .mage: return "🔥"
+                case .paladin: return "🔨"
+                case .priest: return "✜"
+                case .rouge: return "⚔️"
+                case .shaman: return "🌋"
+                case .warlock: return "🖐️"
+                case .warrior: return "🗡"
+                }
+            }
+
+        }
     }
 
     public enum Set {
         case basic
         case classic
+        case oldGods
 
         public var description: String {
             get {
                 switch self {
                 case .basic: return "Basic"
                 case .classic: return "Classic"
+                case .oldGods: return "Whispers of the Old Gods"
+                }
+            }
+        }
+    }
+
+    public enum Rarity {
+        case uncollectible
+        case free
+        case common
+        case rare
+        case epic
+        case legendary
+
+        public var description: String {
+            get {
+                switch self {
+                case .uncollectible: return "Uncollectible"
+                case .free: return "Free"
+                case .common: return "Common"
+                case .rare: return "Rare"
+                case .epic: return "Epic"
+                case .legendary : return "Legendary"
+                }
+            }
+        }
+
+        public var symbol: Character {
+            get {
+                switch self {
+                case .uncollectible: return "🚫"
+                case .free: return "🆓"
+                case .common: return "🖤"
+                case .rare: return "💙"
+                case .epic: return "💜"
+                case .legendary: return "💛"
                 }
             }
         }
@@ -73,6 +128,7 @@ public class Card: CustomStringConvertible {
         var cost: Int
         var cardClass: Class
         var set: Set
+        var rarity: Rarity
         var requirements: [PlayRequirements]
         var text: String
 
@@ -80,12 +136,14 @@ public class Card: CustomStringConvertible {
              cost: Int,
              cardClass: Class,
              set: Set,
+             rarity: Rarity,
              requirements: [PlayRequirements],
              text: String) {
             self.name = name
             self.cost = cost
             self.cardClass = cardClass
             self.set = set
+            self.rarity = rarity
             self.requirements = requirements
             self.text = text
         }
@@ -95,10 +153,11 @@ public class Card: CustomStringConvertible {
     var cost: Int!
     var cardClass: Card.Class!
     var set: Set!
+    var rarity: Rarity!
     var text: String!
     var requirements: [PlayRequirements]!
 
-    public var description: String { return "\(name!) (\(cost!) Mana) [\(text!)]" }
+    public var description: String { return "\(name) (\(cost) Mana) [\(text)]" }
 
     func playabilityForPlayer(_ player: Player) -> Playability {
         if player.mana >= cost {
@@ -112,6 +171,7 @@ public class Card: CustomStringConvertible {
         self.cost = constants.cost
         self.cardClass = constants.cardClass
         self.set = constants.set
+        self.rarity = constants.rarity
         self.text = constants.text
     }
 }
@@ -128,20 +188,27 @@ public class Minion: Card {
              cost: Int,
              cardClass: Class,
              set: Set,
+             rarity: Rarity,
              requirements: [PlayRequirements],
              text: String,
              race: Race,
              attack: Int,
              health: Int)
         {
-            self.constants = Constants(name: name, cost: cost, cardClass: cardClass, set: set, requirements: requirements, text: text)
+            self.constants = Constants(name: name,
+                                       cost: cost,
+                                       cardClass: cardClass,
+                                       set: set,
+                                       rarity: rarity,
+                                       requirements: requirements,
+                                       text: text)
             self.race = race
             self.attack = attack
             self.health = health
         }
     }
 
-    public enum Race {
+    public enum Race: CustomStringConvertible {
         case neutral
         case beast
 
@@ -160,11 +227,19 @@ public class Minion: Card {
     var health: Int!
     internal init(constants: MinionConstants) {
         super.init(constants: constants.constants)
+        self.race = constants.race
         self.attack = constants.attack
         self.health = constants.health
 
     }
-    public override var description: String { return "\(name!) (\(cost!) Mana, \(attack!)/\(health!)) [\(text!)]" }
+    public override var description: String {
+        var rv = "\(name!) (\(rarity.symbol), "
+        if race != .neutral {
+            rv.append("\(race!), ")
+        }
+        rv.append("\(cost!) Mana, \(attack!)/\(health!)) [\(text!)]")
+        return rv
+    }
 }
 
 class BloodfenRaptor: Minion {
@@ -172,6 +247,7 @@ class BloodfenRaptor: Minion {
                                                             cost: 2,
                                                             cardClass: .neutral,
                                                             set: .basic,
+                                                            rarity: .free,
                                                             requirements: [],
                                                             text: "",
                                                             race: .neutral,
@@ -188,6 +264,7 @@ class KnifeJuggler: Minion {
                                                             cost: 2,
                                                             cardClass: .neutral,
                                                             set: .classic,
+                                                            rarity: .rare,
                                                             requirements: [],
                                                             text: "After you summon a minion, deal 1 damage to a random enemy.",
                                                             race: .neutral,
@@ -204,6 +281,7 @@ class StampedingKodo: Minion {
                                                             cost: 5,
                                                             cardClass: .neutral,
                                                             set: .classic,
+                                                            rarity: .rare,
                                                             requirements: [],
                                                             text: "Battlecry: Destroy a random enemy minion with 2 or less Attack.",
                                                             race: .beast,
@@ -220,6 +298,7 @@ class VioletTeacher: Minion {
                                                             cost: 4,
                                                             cardClass: .neutral,
                                                             set: .classic,
+                                                            rarity: .rare,
                                                             requirements: [],
                                                             text: "Whenever you cast a spell, summon a 1/1 Violet Apprentice.",
                                                             race: .neutral,
@@ -232,10 +311,10 @@ class VioletTeacher: Minion {
 }
 
 class VioletApprentice: Minion {
-    static let constants: MinionConstants = MinionConstants(name: "Violet Teacher",
+    static let constants: MinionConstants = MinionConstants(name: "Violet Apprentice",
                                                             cost: 1,
                                                             cardClass: .neutral,
-                                                            set: .classic,
+                                                            set: .classic, rarity: .uncollectible,
                                                             requirements: [],
                                                             text: "",
                                                             race: .neutral,
@@ -256,10 +335,17 @@ class Spell: Card {
              cost: Int,
              cardClass: Class,
              set: Set,
+             rarity: Rarity,
              requirements: [PlayRequirements],
              text: String)
         {
-            self.constants = Constants(name: name, cost: cost, cardClass: cardClass, set: set, requirements: requirements, text: text)
+            self.constants = Constants(name: name,
+                                       cost: cost,
+                                       cardClass: cardClass,
+                                       set: set,
+                                       rarity: rarity,
+                                       requirements: requirements,
+                                       text: text)
         }
     }
 
@@ -273,6 +359,7 @@ class TheCoin: Spell {
                                           cost: 0,
                                           cardClass: .neutral,
                                           set: .basic,
+                                          rarity: .uncollectible,
                                           requirements: [],
                                           text: "Gain 1 Mana Crystal this turn only.")
 
@@ -286,6 +373,7 @@ class Frostbolt: Spell {
                                           cost: 3,
                                           cardClass: .mage,
                                           set: .basic,
+                                          rarity: .free,
                                           requirements: [.requiresTargetToPlay],
                                           text: "Deal 3 damage to a character and Freeze it.")
 
@@ -299,6 +387,7 @@ class Cleave: Spell {
                                           cost: 2,
                                           cardClass: .warrior,
                                           set: .basic,
+                                          rarity: .free,
                                           requirements: [.requiresMinEnemyMinions(2)],
                                           text: "Deal 2 damage to two random enemy minions.")
 
@@ -307,12 +396,111 @@ class Cleave: Spell {
     }
 }
 
-// MARK: - Weapon
-class Weapon: Card {
+class Shatter: Spell {
+    static let constants = SpellConstants(name: "Shatter",
+                                          cost: 2,
+                                          cardClass: .mage,
+                                          set: .oldGods, rarity: .common,
+                                          requirements: [.requiresFrozenTarget, .requiresMinionTarget, .requiresTargetToPlay],
+                                          text: "Destroy a Frozen minion.")
+
+    public init() {
+        super.init(constants: Shatter.constants)
+    }
 }
 
+// MARK: - Weapon
+class Weapon: Card {
+    public struct WeaponConstants {
+        var constants: Constants
+
+        init(name: String,
+             cost: Int,
+             cardClass: Class,
+             set: Set,
+             rarity: Rarity,
+             requirements: [PlayRequirements],
+             text: String)
+        {
+            self.constants = Constants(name: name,
+                                       cost: cost,
+                                       cardClass: cardClass,
+                                       set: set,
+                                       rarity: rarity,
+                                       requirements: requirements,
+                                       text: text)
+        }
+    }
+
+    internal init(constants: WeaponConstants) {
+        super.init(constants: constants.constants)
+    }
+}
+
+// MARK: - HeroPower
 class HeroPower: Card {
+    public struct HeroPowerConstants {
+        var constants: Constants
+
+        init(name: String,
+             cost: Int,
+             cardClass: Class,
+             set: Set,
+             rarity: Rarity,
+             requirements: [PlayRequirements],
+             text: String)
+        {
+            self.constants = Constants(name: name,
+                                       cost: cost,
+                                       cardClass: cardClass,
+                                       set: set,
+                                       rarity: rarity,
+                                       requirements: requirements,
+                                       text: text)
+        }
+    }
+
+    internal init(constants: HeroPowerConstants) {
+        super.init(constants: constants.constants)
+    }
+}
+
+class Fireblast: HeroPower {
+    static let constants = HeroPowerConstants(name: "Fireblast",
+                                              cost: 2,
+                                              cardClass: .mage,
+                                              set: .basic,
+                                              rarity: .uncollectible,
+                                              requirements: [.requiresTargetToPlay],
+                                              text: "Deal 1 damage.")
+
+    public init() {
+        super.init(constants: Fireblast.constants)
+    }
 }
 
 class Hero: Card {
+    public struct HeroConstants {
+        var constants: Constants
+
+        init(name: String,
+             cost: Int,
+             cardClass: Class,
+             set: Set,
+             rarity: Rarity,
+             requirements: [PlayRequirements],
+             text: String)
+        {
+            self.constants = Constants(name: name,
+                                       cost: cost,
+                                       cardClass: cardClass,
+                                       set: set, rarity: rarity,
+                                       requirements: requirements,
+                                       text: text)
+        }
+    }
+    
+    internal init(constants: HeroConstants) {
+        super.init(constants: constants.constants)
+    }
 }

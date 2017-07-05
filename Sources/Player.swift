@@ -50,10 +50,10 @@ class Player {
         goingFirst = isGoingFirst
         self.interface = interface
         self.deck = deck
-        hand = deck.startingHand(ofSize: goingFirst ? Rules.startingHandSizeGoFirst : Rules.startingHandSizeGoSecond)!
+        self.game = game
+        hand = deck.startingHand(ofSize: goingFirst ? Game.defaultRules.startingHandSizeGoFirst : Game.defaultRules.startingHandSizeGoSecond)!
         board = Board()
 
-        self.game = game
         self.interface.player = self
         self.deck.player = self
     }
@@ -118,7 +118,7 @@ class Player {
     }
 
     func takeTurn(_ turn: Int) {
-        if manaCrystals < Rules.maxManaCrystals {
+        if manaCrystals < Game.defaultRules.maxManaCrystals {
             manaCrystals += 1
         }
         usedMana = 0
