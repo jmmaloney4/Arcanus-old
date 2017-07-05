@@ -6,15 +6,15 @@
 
 import Foundation
 
-class Player {
-    public private(set) var isPlayerOne: Bool
-    public private(set) var goingFirst: Bool
-    public private(set) var interface: PlayerInterface
-    public private(set) var deck: Deck
-    public private(set) var hand: Hand
-    public private(set) var board: Board
+internal class Player {
+    internal private(set) var isPlayerOne: Bool
+    internal private(set) var goingFirst: Bool
+    internal private(set) var interface: PlayerInterface
+    internal private(set) var deck: Deck!
+    internal private(set) var hand: Hand!
+    internal private(set) var board: Board
 
-    public var mana: Int {
+    internal var mana: Int {
         get {
             var rv = manaCrystals
             rv += bonusMana
@@ -23,13 +23,13 @@ class Player {
             return rv
         }
     };
-    public private(set) var usedMana: Int = 0;
-    public private(set) var manaCrystals: Int = 0;
-    public private(set) var bonusMana: Int = 0;
-    public private(set) var lockedMana: Int = 0;
-    public private(set) var overloadedMana: Int = 0;
+    internal private(set) var usedMana: Int = 0;
+    internal private(set) var manaCrystals: Int = 0;
+    internal private(set) var bonusMana: Int = 0;
+    internal private(set) var lockedMana: Int = 0;
+    internal private(set) var overloadedMana: Int = 0;
 
-    public func spendMana(_ manaToSpend: Int) -> Bool {
+    internal func spendMana(_ manaToSpend: Int) -> Bool {
         if self.mana < manaToSpend || manaToSpend < 0 {
             return false
         } else {
@@ -38,21 +38,23 @@ class Player {
         }
     }
 
-    public weak var game: Game!;
+    internal weak var game: Game!;
 
     init(isPlayerOne: Bool,
          isGoingFirst: Bool,
          interface: inout PlayerInterface,
-         deck: inout Deck,
+         deckPath: String,
          game: Game)
     {
         self.isPlayerOne = isPlayerOne
         goingFirst = isGoingFirst
         self.interface = interface
-        self.deck = deck
-        self.game = game
-        hand = deck.startingHand(ofSize: goingFirst ? Game.defaultRules.startingHandSizeGoFirst : Game.defaultRules.startingHandSizeGoSecond)!
         board = Board()
+        self.game = game
+        self.deck = Deck(path: deckPath, player: self)!
+        hand = deck.startingHand(ofSize: goingFirst ? Game.defaultRules.startingHandSizeGoFirst : Game.defaultRules.startingHandSizeGoSecond)!
+
+
 
         self.interface.player = self
         self.deck.player = self
@@ -85,7 +87,7 @@ class Player {
         }
 
         if !goingFirst {
-            newHand.addCard(TheCoin())
+            newHand.addCard(TheCoin(owner: self))
         }
 
         hand = newHand
@@ -161,7 +163,7 @@ class Player {
     }
 }
 
-protocol PlayerInterface {
+internal protocol PlayerInterface {
     weak var player: Player! { get set }
 
     func startingMulligan()

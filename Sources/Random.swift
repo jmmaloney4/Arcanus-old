@@ -30,3 +30,5 @@ func generateRandomNumber(from min: Int = 0, upTo max: Int = Int.max) -> Int {
 func generateRandomBool() -> Bool {
     return generateRandomNumber(upTo: 1) == 0 ? true : false
 }
+
+// TODO: Reimplement with seed

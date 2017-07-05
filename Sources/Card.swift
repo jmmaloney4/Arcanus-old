@@ -6,8 +6,8 @@
 
 import Foundation
 
-public class Card: CustomStringConvertible {
-    public enum Class: CustomStringConvertible {
+internal class Card: CustomStringConvertible {
+    internal enum Class: CustomStringConvertible {
         case neutral
         case druid
         case hunter
@@ -19,7 +19,7 @@ public class Card: CustomStringConvertible {
         case warlock
         case warrior
 
-        public var description: String {
+        internal var description: String {
             get {
                 switch self {
                 case .neutral: return "Neutral"
@@ -36,7 +36,7 @@ public class Card: CustomStringConvertible {
             }
         }
 
-        public var symbol: Character {
+        internal var symbol: Character {
             get {
                 switch self {
                 case .neutral: return "¤"
@@ -55,12 +55,12 @@ public class Card: CustomStringConvertible {
         }
     }
 
-    public enum Set {
+    internal enum Set {
         case basic
         case classic
         case oldGods
 
-        public var description: String {
+        internal var description: String {
             get {
                 switch self {
                 case .basic: return "Basic"
@@ -71,7 +71,7 @@ public class Card: CustomStringConvertible {
         }
     }
 
-    public enum Rarity {
+    internal enum Rarity {
         case uncollectible
         case free
         case common
@@ -79,7 +79,7 @@ public class Card: CustomStringConvertible {
         case epic
         case legendary
 
-        public var description: String {
+        internal var description: String {
             get {
                 switch self {
                 case .uncollectible: return "Uncollectible"
@@ -92,7 +92,7 @@ public class Card: CustomStringConvertible {
             }
         }
 
-        public var symbol: Character {
+        internal var symbol: Character {
             get {
                 switch self {
                 case .uncollectible: return "🚫"
@@ -106,13 +106,13 @@ public class Card: CustomStringConvertible {
         }
     }
 
-    public enum Playability {
+    internal enum Playability {
         case no
         case yes
         case withEffect
     }
 
-    public enum PlayRequirements {
+    internal enum PlayRequirements {
         case requiresTargetToPlay
         case requiresMinionTarget
         case requiresFriendlyTarget
@@ -149,30 +149,34 @@ public class Card: CustomStringConvertible {
         }
     }
 
-    fileprivate static let cardIndex: [String: () -> Card] = [
+    fileprivate static let cardIndex: [String: (Player) -> Card] = [
         // Minions
-        BloodfenRaptor.constants.constants.name:{BloodfenRaptor()},
-        KnifeJuggler.constants.constants.name:{KnifeJuggler()},
-        StampedingKodo.constants.constants.name:{StampedingKodo()},
-        VioletTeacher.constants.constants.name:{VioletTeacher()},
-        VioletApprentice.constants.constants.name:{VioletApprentice()},
+
+        BloodfenRaptor.constants.constants.name:{owner in BloodfenRaptor(owner: owner)},
+        KnifeJuggler.constants.constants.name:{owner in KnifeJuggler(owner: owner)},
+        StampedingKodo.constants.constants.name:{owner in StampedingKodo(owner: owner)},
+        VioletTeacher.constants.constants.name:{owner in VioletTeacher(owner: owner)},
+        VioletApprentice.constants.constants.name:{owner in VioletApprentice(owner: owner)},
 
         // Spells
-        TheCoin.constants.constants.name:{TheCoin()},
-        Frostbolt.constants.constants.name:{Frostbolt()},
-        Cleave.constants.constants.name:{Cleave()},
-        Shatter.constants.constants.name:{Shatter()},
+        TheCoin.constants.constants.name:{owner in TheCoin(owner: owner)},
+        Frostbolt.constants.constants.name:{owner in Frostbolt(owner: owner)},
+        Cleave.constants.constants.name:{owner in Cleave(owner: owner)},
+        Shatter.constants.constants.name:{owner in Shatter(owner: owner)},
 
-        Fireblast.constants.constants.name:{Fireblast()}]
+        // Hero Powers
+        Fireblast.constants.constants.name:{owner in Fireblast(owner: owner)}]
 
-    fileprivate static func cardForName(_ name: String) -> Card? {
+    internal static func cardForName(_ name: String, withOwner owner: Player) -> Card? {
         if let factoryFunc = Card.cardIndex[name] {
-            return factoryFunc()
+            return factoryFunc(owner)
         } else {
             return nil
         }
     }
 
+    var owner: Player
+    var id: Int
     var name: String!
     var cost: Int!
     var cardClass: Card.Class!
@@ -181,7 +185,7 @@ public class Card: CustomStringConvertible {
     var text: String!
     var requirements: [PlayRequirements]!
 
-    public var description: String { return "\(name) (\(cost) Mana) [\(text)]" }
+    internal var description: String { return "\(name!) (\(cost!) Mana) [\(text!)]" }
 
     func playabilityForPlayer(_ player: Player) -> Playability {
         if player.mana >= cost {
@@ -190,7 +194,9 @@ public class Card: CustomStringConvertible {
         return .no
     }
 
-    init(constants: Constants) {
+    init(constants: Constants, owner: Player) {
+        self.owner = owner
+        self.id = self.owner.game.getNextCardID()
         self.name = constants.name
         self.cost = constants.cost
         self.cardClass = constants.cardClass
@@ -200,8 +206,8 @@ public class Card: CustomStringConvertible {
     }
 }
 
-public class Minion: Card {
-    public struct MinionConstants {
+internal class Minion: Card {
+    internal struct MinionConstants {
         var constants: Constants
         var race: Race
         var attack: Int
@@ -231,11 +237,11 @@ public class Minion: Card {
         }
     }
 
-    public enum Race: CustomStringConvertible {
+    internal enum Race: CustomStringConvertible {
         case neutral
         case beast
 
-        public var description: String {
+        internal var description: String {
             get {
                 switch self {
                 case .neutral: return "Neutral"
@@ -245,19 +251,22 @@ public class Minion: Card {
         }
     }
 
-
+    internal static func minionForName(_ name: String, withOwner owner: Player) -> Minion? {
+        return Card.cardForName(name, withOwner: owner) as? Minion
+    }
 
     var race: Race!
     var attack: Int!
     var health: Int!
-    fileprivate init(constants: MinionConstants) {
-        super.init(constants: constants.constants)
+
+    fileprivate init(constants: MinionConstants, owner: Player) {
+        super.init(constants: constants.constants, owner: owner)
         self.race = constants.race
         self.attack = constants.attack
         self.health = constants.health
-
     }
-    public override var description: String {
+
+    internal override var description: String {
         var rv = "\(name!) (\(rarity.symbol), "
         if race != .neutral {
             rv.append("\(race!), ")
@@ -268,7 +277,7 @@ public class Minion: Card {
 }
 
 class Spell: Card {
-    public struct SpellConstants {
+    internal struct SpellConstants {
         var constants: Constants
 
         init(name: String,
@@ -289,17 +298,17 @@ class Spell: Card {
         }
     }
 
-    public static func spellForName(_ name: String) -> Spell? {
-        return Card.cardForName(name) as? Spell
+    internal static func spellForName(_ name: String, withOwner owner: Player) -> Spell? {
+        return Card.cardForName(name, withOwner: owner) as? Spell
     }
 
-    fileprivate init(constants: SpellConstants) {
-        super.init(constants: constants.constants)
+    fileprivate init(constants: SpellConstants, owner: Player) {
+        super.init(constants: constants.constants, owner: owner)
     }
 }
 
 class Weapon: Card {
-    public struct WeaponConstants {
+    internal struct WeaponConstants {
         var constants: Constants
 
         init(name: String,
@@ -320,17 +329,17 @@ class Weapon: Card {
         }
     }
 
-    public static func weaponForName(_ name: String) -> Weapon? {
-        return Card.cardForName(name) as? Weapon
+    internal static func weaponForName(_ name: String, withOwner owner: Player) -> Weapon? {
+        return Card.cardForName(name, withOwner: owner) as? Weapon
     }
 
-    internal init(constants: WeaponConstants) {
-        super.init(constants: constants.constants)
+    internal init(constants: WeaponConstants, owner: Player) {
+        super.init(constants: constants.constants, owner: owner)
     }
 }
 
 class HeroPower: Card {
-    public struct HeroPowerConstants {
+    internal struct HeroPowerConstants {
         var constants: Constants
 
         init(name: String,
@@ -351,17 +360,17 @@ class HeroPower: Card {
         }
     }
 
-    public static func heroPowerForName(_ name: String) -> HeroPower? {
-        return Card.cardForName(name) as? HeroPower
+    internal static func heroPowerForName(_ name: String, withOwner owner: Player) -> HeroPower? {
+        return Card.cardForName(name, withOwner: owner) as? HeroPower
     }
 
-    internal init(constants: HeroPowerConstants) {
-        super.init(constants: constants.constants)
+    internal init(constants: HeroPowerConstants, owner: Player) {
+        super.init(constants: constants.constants, owner: owner)
     }
 }
 
 class Hero: Card {
-    public struct HeroConstants {
+    internal struct HeroConstants {
         var constants: Constants
 
         init(name: String,
@@ -381,12 +390,12 @@ class Hero: Card {
         }
     }
 
-    public static func heroForName(_ name: String) -> Hero? {
-        return Card.cardForName(name) as? Hero
+    internal static func heroForName(_ name: String, withOwner owner: Player) -> Hero? {
+        return Card.cardForName(name, withOwner: owner) as? Hero
     }
 
-    internal init(constants: HeroConstants) {
-        super.init(constants: constants.constants)
+    internal init(constants: HeroConstants, owner: Player) {
+        super.init(constants: constants.constants, owner: owner)
     }
 }
 
@@ -409,8 +418,8 @@ class BloodfenRaptor: Minion {
                                                             attack: 3,
                                                             health: 2)
 
-    public init() {
-        super.init(constants: BloodfenRaptor.constants)
+    internal init(owner: Player) {
+        super.init(constants: BloodfenRaptor.constants, owner: owner)
     }
 }
 
@@ -426,8 +435,8 @@ class KnifeJuggler: Minion {
                                                             attack: 2,
                                                             health: 2)
 
-    public init() {
-        super.init(constants: KnifeJuggler.constants)
+    internal init(owner: Player) {
+        super.init(constants: KnifeJuggler.constants, owner: owner)
     }
 }
 
@@ -443,8 +452,8 @@ class StampedingKodo: Minion {
                                                             attack: 3,
                                                             health: 5)
 
-    public init() {
-        super.init(constants: StampedingKodo.constants)
+    internal init(owner: Player) {
+        super.init(constants: StampedingKodo.constants, owner: owner)
     }
 }
 
@@ -460,8 +469,8 @@ class VioletTeacher: Minion {
                                                             attack: 3,
                                                             health: 5)
 
-    public init() {
-        super.init(constants: VioletTeacher.constants)
+    internal init(owner: Player) {
+        super.init(constants: VioletTeacher.constants, owner: owner)
     }
 }
 
@@ -476,8 +485,8 @@ class VioletApprentice: Minion {
                                                             attack: 1,
                                                             health: 1)
 
-    public init() {
-        super.init(constants: VioletApprentice.constants)
+    internal init(owner: Player) {
+        super.init(constants: VioletApprentice.constants, owner: owner)
     }
 }
 
@@ -491,8 +500,8 @@ class TheCoin: Spell {
                                           requirements: [],
                                           text: "Gain 1 Mana Crystal this turn only.")
 
-    public init() {
-        super.init(constants: TheCoin.constants)
+    internal init(owner: Player) {
+        super.init(constants: TheCoin.constants, owner: owner)
     }
 }
 
@@ -505,8 +514,8 @@ class Frostbolt: Spell {
                                           requirements: [.requiresTargetToPlay],
                                           text: "Deal 3 damage to a character and Freeze it.")
 
-    public init() {
-        super.init(constants: Frostbolt.constants)
+    internal init(owner: Player) {
+        super.init(constants: Frostbolt.constants, owner: owner)
     }
 }
 
@@ -519,8 +528,8 @@ class Cleave: Spell {
                                           requirements: [.requiresMinEnemyMinions(2)],
                                           text: "Deal 2 damage to two random enemy minions.")
 
-    public init() {
-        super.init(constants: Cleave.constants)
+    internal init(owner: Player) {
+        super.init(constants: Cleave.constants, owner: owner)
     }
 }
 
@@ -532,8 +541,8 @@ class Shatter: Spell {
                                           requirements: [.requiresFrozenTarget, .requiresMinionTarget, .requiresTargetToPlay],
                                           text: "Destroy a Frozen minion.")
 
-    public init() {
-        super.init(constants: Shatter.constants)
+    internal init(owner: Player) {
+        super.init(constants: Shatter.constants, owner: owner)
     }
 }
 
@@ -549,8 +558,8 @@ class Fireblast: HeroPower {
                                               requirements: [.requiresTargetToPlay],
                                               text: "Deal 1 damage.")
 
-    public init() {
-        super.init(constants: Fireblast.constants)
+    internal init(owner: Player) {
+        super.init(constants: Fireblast.constants, owner: owner)
     }
 }
 

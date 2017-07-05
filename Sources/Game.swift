@@ -6,28 +6,28 @@
 
 import Foundation
 
-class Game {
-    struct Rules {
-        var cardsInDeck: Int = 15
+internal class Game {
+    internal struct Rules {
+        var cardsInDeck: Int = 30
         var startingHandSizeGoFirst: Int = 3
         var startingHandSizeGoSecond: Int = 4
         var maxManaCrystals: Int = 10
     }
 
-    public static let defaultRules = Rules()
+    internal static let defaultRules = Rules()
 
-    public private(set) var players: [Player]
-    public private(set) var firstPlayer: Int!
-    public private(set) var board: Board
-    public private(set) var hasEnded: Bool
-    public private(set) var hasStarted: Bool = false
-    public private(set) var turn: Int
+    internal private(set) var players: [Player]
+    internal private(set) var firstPlayer: Int!
+    internal private(set) var board: Board
+    internal private(set) var hasEnded: Bool
+    internal private(set) var hasStarted: Bool = false
+    internal private(set) var turn: Int
     private var events: [GameEvent] = []
 
     init(playerOneInterface interfacePlayer1: inout PlayerInterface,
-         deck deckPlayer1: inout Deck,
+         deckPath deckPathPlayer1: String,
          playerTwoInterface interfacePlayer2: inout PlayerInterface,
-         deck deckPlayer2: inout Deck)
+         deckPath deckPathPlayer2: String)
     {
         firstPlayer = generateRandomNumber(upTo: 1)
         players = []
@@ -35,18 +35,18 @@ class Game {
         hasEnded = false
         turn = 0
 
-        game.addEvent(.initGame(Game.defaultRules))
-
+        self.addEvent(.initGame(Game.defaultRules))
+        
         players.append(Player(isPlayerOne: true,
                               isGoingFirst: firstPlayer == 0,
                               interface: &interfacePlayer1,
-                              deck: &deckPlayer1,
+                              deckPath: deckPathPlayer1,
                               game: self))
 
         players.append(Player(isPlayerOne: false,
                               isGoingFirst: firstPlayer == 1,
                               interface: &interfacePlayer2,
-                              deck: &deckPlayer2,
+                              deckPath: deckPathPlayer2,
                               game: self))
 
     }
@@ -71,5 +71,12 @@ class Game {
         case initGame(Rules)
         case initPlayer
         case playerAction(Player.Action)
+    }
+
+    // -1 so when incremented first card will have id = 0
+    private var cardID = -1
+    func getNextCardID() -> Int {
+        cardID += 1
+        return cardID
     }
 }

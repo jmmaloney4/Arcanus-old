@@ -6,17 +6,19 @@
 
 import Foundation
 
-class Deck: Sequence, CustomStringConvertible {
-    private(set) public var contents: [Card]
+internal class Deck: Sequence, CustomStringConvertible {
+    private(set) public var contents: [Card] = []
     public var count: Int {
         get {
             return contents.count
         }
     }
-    public var description: String { return contents.description }
+    public var description: String { return contents.map({$0.description}).joined(separator: "\n") }
     public weak var player: Player!
 
-    init?(path: String) {
+    init?(path: String, player: Player) {
+        self.player = player
+
         guard let fileData = try? String(contentsOfFile: path, encoding: .utf8) else {
             return nil
         }
@@ -27,15 +29,9 @@ class Deck: Sequence, CustomStringConvertible {
             return nil
         }
 
-        contents = []
-        for _ in 0 ..< 5 {
-            contents.append(BloodfenRaptor())
-        }
-        for _ in 0 ..< 5 {
-            contents.append(KnifeJuggler())
-        }
-        for _ in 0 ..< 5 {
-            contents.append(StampedingKodo())
+        let usableEntries = entries.prefix(Game.defaultRules.cardsInDeck)
+        for entry in usableEntries {
+            contents.append(Card.cardForName(entry, withOwner: self.player)!)
         }
     }
 
@@ -123,7 +119,7 @@ class Deck: Sequence, CustomStringConvertible {
     }
 }
 
-class Hand: Sequence, CustomStringConvertible {
+internal class Hand: Sequence, CustomStringConvertible {
     private(set) public var contents: [Card]
     public var count: Int {
         get {
@@ -166,7 +162,7 @@ class Hand: Sequence, CustomStringConvertible {
     }
 }
 
-class Board: Sequence, CustomStringConvertible {
+internal class Board: Sequence, CustomStringConvertible {
     private(set) public var contents: [Minion]
     public var count: Int {
         get {
