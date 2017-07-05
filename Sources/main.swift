@@ -6,15 +6,24 @@
 
 import Foundation
 
-if CommandLine.arguments.count < 3 {
-    print("Usage: \(CommandLine.arguments[0]) [deck player1] [deck player2]")
+func main() {
+    let rng = Random(seed: 0)
+    for _ in 0...100 {
+        print(rng.next(from: 1, upTo: 0))
+    }
+
+    if CommandLine.arguments.count < 3 {
+        print("Usage: \(CommandLine.arguments[0]) [deck player1] [deck player2]")
+    }
+
+    var p1: PlayerInterface = CLIPlayer()
+    var p2: PlayerInterface = CLIPlayer()
+
+    let game = Game(playerOneInterface: &p1,
+                        deckPath: CommandLine.arguments[1],
+                        playerTwoInterface: &p2,
+                        deckPath: CommandLine.arguments[1])
+    game.start()
 }
 
-var p1: PlayerInterface = CLIPlayer()
-var p2: PlayerInterface = CLIPlayer()
-
-var game = Game(playerOneInterface: &p1,
-                deckPath: CommandLine.arguments[1],
-                playerTwoInterface: &p2,
-                deckPath: CommandLine.arguments[1])
-game.start()
+main()

@@ -5,6 +5,7 @@
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 import Foundation
+import Squall
 
 #if os(Linux)
     import Glibc
@@ -12,23 +13,27 @@ import Foundation
     import Darwin
 #endif
 
-/// Portable function to generate a random number in a certian range.
-///
-/// - Parameters:
-///     - min: The minimum value in the range. By default is set to 0.
-///     - max: The maximum value in the range. By default is set to Int.max.
-func generateRandomNumber(from min: Int = 0, upTo max: Int = Int.max) -> Int {
-    var range = max - min
-    #if os(Linux)
-        return Int(random() % (range + 1)) + min
-    #else
-        return Int(arc4random_uniform(UInt32(range + 1))) + min
-    #endif
-}
+public class Random {
+    private var rng: Gust
+    private var seed: UInt32
 
-/// Portable function to generate a random Bool.
-func generateRandomBool() -> Bool {
-    return generateRandomNumber(upTo: 1) == 0 ? true : false
-}
+    init(seed: UInt32 = UInt32(Date().timeIntervalSinceReferenceDate)) {
+        self.seed = seed
+        rng = Gust(seed: seed)
+    }
 
-// TODO: Reimplement with seed
+    /// Portable function to generate a random number in a certian range.
+    ///
+    /// - Parameters:
+    ///     - min: The minimum value in the range. By default is set to 0.
+    ///     - max: The maximum value in the range. By default is set to Int.max.
+    public func next(from min: Int = 0, upTo max: Int = Int.max) -> Int {
+        let range = UInt32((min...max).count)
+        return Int(rng.random() % range) + min
+    }
+
+    /// Portable function to generate a random Bool.
+    public func nextBool() -> Bool {
+        return next(from: 0, upTo: 1) == 0 ? true : false
+    }
+}

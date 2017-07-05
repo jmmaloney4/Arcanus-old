@@ -6,4 +6,10 @@
 
 import PackageDescription
 
-let package = Package(name: "hs")
+let package = Package(
+    name: "hs",
+    dependencies: [
+    .Package(url: "https://github.com/jmmaloney4/Squall.git", majorVersion: 1, minor: 2),
+    ]
+)
+

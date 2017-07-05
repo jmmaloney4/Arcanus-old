@@ -16,6 +16,7 @@ internal class Game {
 
     internal static let defaultRules = Rules()
 
+    internal private(set) var rng: Random
     internal private(set) var players: [Player]
     internal private(set) var firstPlayer: Int!
     internal private(set) var board: Board
@@ -29,7 +30,8 @@ internal class Game {
          playerTwoInterface interfacePlayer2: inout PlayerInterface,
          deckPath deckPathPlayer2: String)
     {
-        firstPlayer = generateRandomNumber(upTo: 1)
+        rng = Random()
+        firstPlayer = rng.next(upTo: 1)
         players = []
         board = Board()
         hasEnded = false

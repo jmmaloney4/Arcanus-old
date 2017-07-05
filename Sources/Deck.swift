@@ -36,10 +36,10 @@ internal class Deck: Sequence, CustomStringConvertible {
     }
 
     public func draw(triggerEvent: Bool = true) -> Card? {
-        if contents.count == 0 {
+        if contents.isEmpty {
             return nil
         }
-        let rv = contents.remove(at: generateRandomNumber(upTo: contents.count - 1))
+        let rv = contents.remove(at: player.game.rng.next(upTo: contents.count - 1))
         if triggerEvent {
             Event.cardDrawn(rv, by: player).raise()
         }
