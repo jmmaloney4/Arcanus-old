@@ -54,8 +54,6 @@ internal class Player {
         self.deck = Deck(path: deckPath, player: self)!
         hand = deck.startingHand(ofSize: goingFirst ? Game.defaultRules.startingHandSizeGoFirst : Game.defaultRules.startingHandSizeGoSecond)!
 
-
-
         self.interface.player = self
         self.deck.player = self
     }

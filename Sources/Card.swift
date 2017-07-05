@@ -185,7 +185,7 @@ internal class Card: CustomStringConvertible {
     var text: String!
     var requirements: [PlayRequirements]!
 
-    internal var description: String { return "\(name!) (\(cost!) Mana) [\(text!)]" }
+    internal var description: String { return "\(name!) (ID: \(id)) (\(cost!) Mana) [\(text!)]" }
 
     func playabilityForPlayer(_ player: Player) -> Playability {
         if player.mana >= cost {
@@ -267,7 +267,7 @@ internal class Minion: Card {
     }
 
     internal override var description: String {
-        var rv = "\(name!) (\(rarity.symbol), "
+        var rv = "\(name!) (ID: \(id)) (\(rarity.symbol), "
         if race != .neutral {
             rv.append("\(race!), ")
         }

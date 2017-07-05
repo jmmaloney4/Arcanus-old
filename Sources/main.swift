@@ -9,7 +9,7 @@ import Foundation
 func main() {
     let rng = Random(seed: 0)
     for _ in 0...100 {
-        print(rng.next(from: 1, upTo: 0))
+        print(rng.next(from: 0, upTo: 4))
     }
 
     if CommandLine.arguments.count < 3 {
