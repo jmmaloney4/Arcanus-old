@@ -8,12 +8,12 @@ import Foundation
 import Squall
 
 public class Random {
-    private var rng: MersenneTwisterGenerator
-    public private(set) var seed: UInt32
+    private var rng: Gust
+    private var seed: UInt32
 
     init(seed: UInt32 = UInt32(Date().timeIntervalSinceReferenceDate)) {
         self.seed = seed
-        rng = MersenneTwisterGenerator(seed: seed)
+        rng = Gust(seed: seed)
     }
 
     /// Portable function to generate a random number in a certian range.
@@ -23,7 +23,7 @@ public class Random {
     ///     - max: The maximum value in the range. By default is set to Int.max.
     public func next(from min: Int = 0, upTo max: Int = Int.max) -> Int {
         let range = UInt32((min...max).count)
-        return Int(rng.next()! % range) + min
+        return Int(rng.random() % range) + min
     }
 
     /// Portable function to generate a random Bool.
