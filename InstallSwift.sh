@@ -10,6 +10,7 @@ if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then
 	ls ${PWD}/${SWIFT_VERSION}-ubuntu14.04/usr/bin
 	export PATH="${PWD}/${SWIFT_VERSION}-ubuntu14.04/usr/bin/:${PATH}"
 	cd "$DIR"
+	echo $PATH
 else
 	export SWIFT_VERSION=swift-3.1.1-RELEASE
     curl -O https://swift.org/builds/swift-3.1.1-release/xcode/${SWIFT_VERSION}/${SWIFT_VERSION}-osx.pkg
