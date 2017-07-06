@@ -6,10 +6,47 @@
 
 import PackageDescription
 
+
+/* Swift 4 ----------
+
 let package = Package(
-    name: "hs",
+    name: "Arcanus",
+    products: [
+        .library(name: "Arcanus", targets: ["Arcanus"]),
+        .executable(name:"arcanus", targets: ["CLI"])
+    ],
     dependencies: [
-    .Package(url: "https://github.com/jmmaloney4/Squall.git", majorVersion: 1, minor: 2),
+        .package(url: "https://github.com/jmmaloney4/Squall.git", .upToNextMinor("1.2.1")),
+        ],
+    targets: [
+        .target(
+            name: "CLI",
+            dependencies: [
+                "Arcanus"
+            ]
+        ),
+        .target(
+            name: "Arcanus",
+            dependencies: [
+                "Squall"
+            ]
+        ),
+        .testTarget(
+            name: "ArcanusTests",
+            dependencies: [
+                "Arcanus"
+            ]
+        )
     ]
 )
 
+*/
+
+let package = Package(
+    name: "Arcanus",
+    targets: [ Target(name: "CLI", dependencies: ["Arcanus"]) ],
+
+    dependencies: [
+        .Package(url: "https://github.com/jmmaloney4/Squall.git", versions: Version(1,2,1)..<Version(1,3,0)),
+    ]
+)

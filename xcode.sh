@@ -1,4 +1,4 @@
 #!/bin/bash
 
 swift package generate-xcodeproj
-open ./hs.xcodeproj
+open ./Arcanus.xcodeproj
