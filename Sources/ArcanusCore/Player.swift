@@ -128,16 +128,16 @@ public class Player {
         while true {
             let action = interface.nextAction()
             switch action {
-            case .playCard(let index, let location, let target):
+            case .playCard(let index, let location, _):
                 let card = hand.removeCard(at: index)!
                 if !spendMana(card.cost) {
                     assert(false, "Failed to play card \(card)")
                 }
 
                 if let minion = card as? Minion {
-                    board.add(minion: minion, at: location!)
+                    board.insert(minion, at: location!)
                 } else if let spell = card as? Spell {
-
+                    print("Cast \(spell)")
                 }
 
                 break

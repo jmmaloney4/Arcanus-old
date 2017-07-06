@@ -142,7 +142,7 @@ public class CLIPlayer: PlayerInterface {
             }
 
             let index = optionPrompt(handOptions, playability: handPlayabilityList);
-            let card = player.hand.card(at: index)!
+            let card = player.hand[index]
 
             if card is Minion {
                 if player.board.contents.isEmpty {
