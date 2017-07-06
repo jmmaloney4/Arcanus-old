@@ -11,7 +11,7 @@ if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then
 	tar xzf $SWIFT_VERSION-ubuntu14.04.tar.gz
 	echo "Untared Swift"
 	ls ${PWD}/${SWIFT_VERSION}-ubuntu14.04/usr/bin
-	export PATH="${PWD}/${SWIFT_VERSION}-ubuntu14.04/usr/bin:${PATH}"
+	export PATH="${PWD}/${SWIFT_VERSION}-ubuntu14.04/usr/bin/:${PATH}"
 	cd "$DIR"
 else
 	export SWIFT_VERSION=swift-3.1.1-RELEASE
