@@ -8,6 +8,7 @@ import Foundation
 import Arcanus
 
 func main() {
+    /*
     if CommandLine.arguments.count < 3 {
         print("Usage: \(CommandLine.arguments[0]) [deck player1] [deck player2]")
     }
@@ -20,6 +21,7 @@ func main() {
                         playerTwoInterface: &p2,
                         deckPath: CommandLine.arguments[1])
     game.start()
+ */
 }
 
 main()
