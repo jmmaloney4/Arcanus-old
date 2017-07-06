@@ -7,8 +7,8 @@
 import XCTest
 @testable import Arcanus
 
-class ArcanusTests: XCTestCase {
-    static var allTests = {
+public class BasicTests: XCTestCase {
+    public static var allTests = {
         return [
             ("testTests", testTests),
         ]

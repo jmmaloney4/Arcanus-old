@@ -9,7 +9,4 @@ import XCTest
 
 import ArcanusTests
 
-var tests = [XCTestCaseEntry]()
-tests += ArcanusTests.allTests()
-
-XCTMain(tests)
+XCTMain([testCase(BasicTests.allTests)])
