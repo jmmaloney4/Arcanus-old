@@ -47,6 +47,6 @@ let package = Package(
     targets: [ Target(name: "CLI", dependencies: ["Arcanus"]) ],
 
     dependencies: [
-        .Package(url: "https://github.com/jmmaloney4/Squall.git", versions: Version(1,2,2)..<Version(1,3,0)),
+        .Package(url: "https://github.com/jmmaloney4/Squall.git", versions: Version(1,2,3)..<Version(1,3,0)),
     ]
 )
