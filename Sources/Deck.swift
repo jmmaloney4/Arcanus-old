@@ -33,8 +33,6 @@ internal class Deck: Sequence, CustomStringConvertible {
         for entry in usableEntries {
             contents.append(Card.cardForName(entry, withOwner: self.player)!)
         }
-
-        print(self)
     }
 
     public func draw(triggerEvent: Bool = true) -> Card? {

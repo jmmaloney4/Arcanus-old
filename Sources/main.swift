@@ -7,11 +7,6 @@
 import Foundation
 
 func main() {
-    let rng = Random(seed: 0)
-    for _ in 0...100 {
-        print(rng.next(from: 0, upTo: 4))
-    }
-
     if CommandLine.arguments.count < 3 {
         print("Usage: \(CommandLine.arguments[0]) [deck player1] [deck player2]")
     }
