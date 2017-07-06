@@ -6,7 +6,7 @@
 
 import Foundation
 
-internal class Game {
+public class Game {
     internal struct Rules {
         var cardsInDeck: Int = 30
         var startingHandSizeGoFirst: Int = 3
@@ -25,7 +25,7 @@ internal class Game {
     internal private(set) var turn: Int
     private var events: [GameEvent] = []
 
-    init(playerOneInterface interfacePlayer1: inout PlayerInterface,
+    public init(playerOneInterface interfacePlayer1: inout PlayerInterface,
          deckPath deckPathPlayer1: String,
          playerTwoInterface interfacePlayer2: inout PlayerInterface,
          deckPath deckPathPlayer2: String)
@@ -53,7 +53,7 @@ internal class Game {
 
     }
 
-    func start() {
+    public func start() {
         // players[0].runMulligan()
         // players[1].runMulligan()
 

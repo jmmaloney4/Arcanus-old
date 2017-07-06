@@ -38,9 +38,13 @@ fileprivate enum TextColor {
     }
 }
 
-class CLIPlayer: PlayerInterface {
+public class CLIPlayer: PlayerInterface {
 
-    weak var player: Player!
+    public weak var player: Player!
+
+    public init() {
+        
+    }
 
     func boolPrompt(_ prompt:String) -> Bool? {
         while true {
@@ -61,8 +65,7 @@ class CLIPlayer: PlayerInterface {
         }
     }
 
-    func optionPrompt(_ options: [String],
-                      playability passedPlayability: [Card.Playability]? = nil) -> Int {
+    func printOptionList(_ options: [String], playability passedPlayability: [Card.Playability]? = nil) {
         var playability: [Card.Playability]
         if passedPlayability == nil {
             playability = Array(repeating: Card.Playability.yes, count: options.count)
@@ -82,6 +85,18 @@ class CLIPlayer: PlayerInterface {
             }
             print(options[k])
         }
+    }
+
+    func optionPrompt(_ options: [String],
+                      playability passedPlayability: [Card.Playability]? = nil) -> Int {
+        var playability: [Card.Playability]
+        if passedPlayability == nil {
+            playability = Array(repeating: Card.Playability.yes, count: options.count)
+        } else {
+            playability = passedPlayability!
+        }
+
+        printOptionList(options, playability: passedPlayability)
 
         while true {
             print("[0-\(options.count - 1)]", terminator: ": ")
@@ -98,26 +113,34 @@ class CLIPlayer: PlayerInterface {
         }
     }
 
-    func startingMulligan() {
+    public func startingMulligan() {
         print("Starting hand: \(player.hand)")
     }
 
-    func finishedMulligan() {
+    public func finishedMulligan() {
         print("New hand: \(player.hand)")
     }
 
-    func mulliganCard(_ card: Card) -> Bool {
+    public func mulliganCard(_ card: Card) -> Bool {
         return boolPrompt("Mulligan \(card)")!;
     }
 
-    func nextAction() -> Player.Action {
+    public func nextAction() -> Player.Action {
         print("Avaliable: \(player.mana), Used: \(player.usedMana), Locked: \(player.lockedMana), Overloaded: \(player.overloadedMana)")
 
+        let handPlayability = player.playabilityOfHand()
         switch (optionPrompt(["Play Card", "Use Hero Power", "Minion Combat", "Hero Combat", "End Turn"],
-                             playability: [player.playabilityOfHand(), .no, .no, .no, .withEffect])) {
+                             playability: [handPlayability == .no ? .withEffect : .yes, .no, .no, .no, .withEffect])) {
         case 0:
-            let index = optionPrompt(player.hand.contents.map({ $0.description }),
-                                     playability: player.hand.contents.map({$0.playabilityForPlayer(player)}));
+            let handOptions = player.hand.contents.map({ $0.description })
+            let handPlayabilityList = player.hand.contents.map({$0.playabilityForPlayer(player)})
+
+            if handPlayability == .no {
+                printOptionList(handOptions, playability: handPlayabilityList)
+                return nextAction()
+            }
+
+            let index = optionPrompt(handOptions, playability: handPlayabilityList);
             let card = player.hand.card(at: index)!
 
             if card is Minion {
@@ -131,8 +154,6 @@ class CLIPlayer: PlayerInterface {
                 }
                 boardOptions.append("Right Side of \(player.board.minion(at: player.board.count - 1))")
                 let location = optionPrompt(boardOptions)
-
-                
 
                 return .playCard(index: index, location: location, target: nil)
             } else if card is Spell {
@@ -151,13 +172,5 @@ class CLIPlayer: PlayerInterface {
             assert(false, "Shouldn't reach this switch case")
         }
         return .endTurn
-    }
-
-    func eventRaised(_ event: Event) {
-        
-    }
-
-    func finishedProcessingEvent(_ event: Event) {
-
     }
 }

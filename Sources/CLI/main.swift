@@ -8,12 +8,13 @@ import Foundation
 import Arcanus
 
 func main() {
-    /*
+
     if CommandLine.arguments.count < 3 {
         print("Usage: \(CommandLine.arguments[0]) [deck player1] [deck player2]")
+        exit(1)
     }
 
-    var p1: PlayerInterface = CLIPlayer()
+    var p1: Arcanus.PlayerInterface = CLIPlayer()
     var p2: PlayerInterface = CLIPlayer()
 
     let game = Game(playerOneInterface: &p1,
@@ -21,7 +22,7 @@ func main() {
                         playerTwoInterface: &p2,
                         deckPath: CommandLine.arguments[1])
     game.start()
- */
+ 
 }
 
 main()

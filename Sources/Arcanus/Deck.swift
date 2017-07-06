@@ -40,9 +40,6 @@ internal class Deck: Sequence, CustomStringConvertible {
             return nil
         }
         let rv = contents.remove(at: player.game.rng.next(upTo: contents.count - 1))
-        if triggerEvent {
-            Event.cardDrawn(rv, by: player).raise()
-        }
         return rv
     }
 

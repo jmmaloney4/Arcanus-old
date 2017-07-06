@@ -6,7 +6,7 @@
 
 import Foundation
 
-internal class Player {
+public class Player {
     internal private(set) var isPlayerOne: Bool
     internal private(set) var goingFirst: Bool
     internal private(set) var interface: PlayerInterface
@@ -63,14 +63,6 @@ internal class Player {
         return isPlayerOne ? "Player One" : "Player Two"
     }
 
-    func handleEvent(_ event: PlayerEvent) {
-        switch event {
-
-        default:
-            break
-        }
-    }
-
     func runMulligan() {
         interface.startingMulligan()
 
@@ -92,7 +84,7 @@ internal class Player {
         interface.finishedMulligan()
     }
 
-    enum Action {
+    public enum Action {
         case playCard(index: Int, location: Int?, target: Card?)
         case heroPower
         case minionCombat
@@ -126,8 +118,6 @@ internal class Player {
         lockedMana = overloadedMana
         overloadedMana = 0
 
-        Event.startingTurn(turn, by: self).raise()
-
         if let cardDrawn = deck.draw() {
             hand.addCard(cardDrawn)
         } else {
@@ -152,7 +142,6 @@ internal class Player {
 
                 break
             case .endTurn:
-                Event.endingTurn(turn, by: self).raise()
                 return
             default:
                 break
@@ -161,7 +150,7 @@ internal class Player {
     }
 }
 
-internal protocol PlayerInterface {
+public protocol PlayerInterface {
     weak var player: Player! { get set }
 
     func startingMulligan()
@@ -169,7 +158,4 @@ internal protocol PlayerInterface {
     func finishedMulligan()
 
     func nextAction() -> Player.Action
-
-    func eventRaised(_ event: Event)
-    func finishedProcessingEvent(_ event: Event)
 }
