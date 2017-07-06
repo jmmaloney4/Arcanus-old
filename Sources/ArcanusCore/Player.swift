@@ -13,6 +13,7 @@ public class Player {
     internal private(set) var deck: Deck!
     internal private(set) var hand: Hand!
     internal private(set) var board: Board
+    internal private(set) var hero: Hero!
 
     internal var mana: Int {
         get {
@@ -51,6 +52,7 @@ public class Player {
         self.interface = interface
         board = Board()
         self.game = game
+        // self.hero = Hero.defaultHeroForClass(.mage, owner: self)
         self.deck = Deck(path: deckPath, player: self)!
         hand = deck.startingHand(ofSize: goingFirst ? Game.defaultRules.startingHandSizeGoFirst : Game.defaultRules.startingHandSizeGoSecond)!
 

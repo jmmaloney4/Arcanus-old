@@ -127,6 +127,7 @@ public class CLIPlayer: PlayerInterface {
 
     public func nextAction() -> Player.Action {
         print("Avaliable: \(player.mana), Used: \(player.usedMana), Locked: \(player.lockedMana), Overloaded: \(player.overloadedMana)")
+        print("In Play: \(player.game.charactersInPlay)")
 
         let handPlayability = player.playabilityOfHand()
         switch (optionPrompt(["Play Card", "Use Hero Power", "Minion Combat", "Hero Combat", "End Turn"],
@@ -160,6 +161,8 @@ public class CLIPlayer: PlayerInterface {
             } else if card is Spell {
                 if card.hasRequirement(.requiresTargetToPlay) {
                     print("Needs target")
+
+                    // var targets = player.game.charactersInPlay.filter({})
                 }
 
                 return .playCard(index: index, location: nil, target: nil)
