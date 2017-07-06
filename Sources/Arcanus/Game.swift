@@ -26,9 +26,9 @@ public class Game {
     private var events: [GameEvent] = []
 
     public init(playerOneInterface interfacePlayer1: inout PlayerInterface,
-         deckPath deckPathPlayer1: String,
-         playerTwoInterface interfacePlayer2: inout PlayerInterface,
-         deckPath deckPathPlayer2: String)
+                deckPath deckPathPlayer1: String,
+                playerTwoInterface interfacePlayer2: inout PlayerInterface,
+                deckPath deckPathPlayer2: String)
     {
         rng = Random()
         firstPlayer = rng.next(upTo: 1)
@@ -38,7 +38,7 @@ public class Game {
         turn = 0
 
         self.addEvent(.initGame(Game.defaultRules))
-        
+
         players.append(Player(isPlayerOne: true,
                               isGoingFirst: firstPlayer == 0,
                               interface: &interfacePlayer1,

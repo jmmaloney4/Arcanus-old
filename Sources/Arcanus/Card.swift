@@ -112,7 +112,7 @@ public class Card: CustomStringConvertible {
         case withEffect
     }
 
-    public enum PlayRequirements {
+    public enum PlayRequirement {
         case requiresTargetToPlay
         case requiresMinionTarget
         case requiresFriendlyTarget
@@ -121,6 +121,24 @@ public class Card: CustomStringConvertible {
         case requiresFrozenTarget
         case requiresTargetWithRace(Minion.Race)
         case requiresMinEnemyMinions(Int)
+
+        public static func ==(lhs: PlayRequirement, rhs: PlayRequirement) -> Bool {
+            switch (lhs, rhs) {
+            case (.requiresTargetWithRace(let a), .requiresTargetWithRace(let b)):
+                return a == b
+            case (.requiresMinEnemyMinions(let a), .requiresMinEnemyMinions(let b)):
+                return a == b
+            case (.requiresTargetToPlay, .requiresTargetToPlay),
+                 (.requiresMinionTarget, .requiresMinionTarget),
+                 (.requiresFriendlyTarget, .requiresFriendlyTarget),
+                 (.requiresEnemyTarget, .requiresEnemyTarget),
+                 (.requiresDamagedTarget, .requiresDamagedTarget),
+                 (.requiresFrozenTarget, .requiresFrozenTarget):
+                return true
+            default:
+                return false
+            }
+        }
     }
 
     internal struct Constants {
@@ -129,7 +147,7 @@ public class Card: CustomStringConvertible {
         var cardClass: Class
         var set: Set
         var rarity: Rarity
-        var requirements: [PlayRequirements]
+        var requirements: [PlayRequirement]
         var text: String
 
         init(name: String,
@@ -137,7 +155,7 @@ public class Card: CustomStringConvertible {
              cardClass: Class,
              set: Set,
              rarity: Rarity,
-             requirements: [PlayRequirements],
+             requirements: [PlayRequirement],
              text: String) {
             self.name = name
             self.cost = cost
@@ -183,7 +201,7 @@ public class Card: CustomStringConvertible {
     var set: Set!
     var rarity: Rarity!
     var text: String!
-    var requirements: [PlayRequirements]!
+    var requirements: [PlayRequirement]!
 
     public var description: String { return "\(name!) (ID: \(id)) (\(cost!) Mana) [\(text!)]" }
 
@@ -203,6 +221,11 @@ public class Card: CustomStringConvertible {
         self.set = constants.set
         self.rarity = constants.rarity
         self.text = constants.text
+        self.requirements = constants.requirements
+    }
+
+    public func hasRequirement(_ req: PlayRequirement) -> Bool {
+        return self.requirements.contains(where: {$0 == req})
     }
 }
 
@@ -218,7 +241,7 @@ public class Minion: Card {
              cardClass: Class,
              set: Set,
              rarity: Rarity,
-             requirements: [PlayRequirements],
+             requirements: [PlayRequirement],
              text: String,
              race: Race,
              attack: Int,
@@ -285,7 +308,7 @@ public class Spell: Card {
              cardClass: Class,
              set: Set,
              rarity: Rarity,
-             requirements: [PlayRequirements],
+             requirements: [PlayRequirement],
              text: String)
         {
             self.constants = Constants(name: name,
@@ -316,7 +339,7 @@ public class Weapon: Card {
              cardClass: Class,
              set: Set,
              rarity: Rarity,
-             requirements: [PlayRequirements],
+             requirements: [PlayRequirement],
              text: String)
         {
             self.constants = Constants(name: name,
@@ -347,7 +370,7 @@ public class HeroPower: Card {
              cardClass: Class,
              set: Set,
              rarity: Rarity,
-             requirements: [PlayRequirements],
+             requirements: [PlayRequirement],
              text: String)
         {
             self.constants = Constants(name: name,
@@ -378,7 +401,7 @@ public class Hero: Card {
              cardClass: Class,
              set: Set,
              rarity: Rarity,
-             requirements: [PlayRequirements],
+             requirements: [PlayRequirement],
              text: String)
         {
             self.constants = Constants(name: name,
@@ -408,15 +431,15 @@ public class Hero: Card {
 // MARK: - Minion
 public class BloodfenRaptor: Minion {
     internal static let constants: MinionConstants = MinionConstants(name: "Bloodfen Raptor",
-                                                            cost: 2,
-                                                            cardClass: .neutral,
-                                                            set: .basic,
-                                                            rarity: .free,
-                                                            requirements: [],
-                                                            text: "",
-                                                            race: .neutral,
-                                                            attack: 3,
-                                                            health: 2)
+                                                                     cost: 2,
+                                                                     cardClass: .neutral,
+                                                                     set: .basic,
+                                                                     rarity: .free,
+                                                                     requirements: [],
+                                                                     text: "",
+                                                                     race: .neutral,
+                                                                     attack: 3,
+                                                                     health: 2)
 
     public init(owner: Player) {
         super.init(constants: BloodfenRaptor.constants, owner: owner)
@@ -425,15 +448,15 @@ public class BloodfenRaptor: Minion {
 
 public class KnifeJuggler: Minion {
     internal static let constants: MinionConstants = MinionConstants(name: "Knife Juggler",
-                                                            cost: 2,
-                                                            cardClass: .neutral,
-                                                            set: .classic,
-                                                            rarity: .rare,
-                                                            requirements: [],
-                                                            text: "After you summon a minion, deal 1 damage to a random enemy.",
-                                                            race: .neutral,
-                                                            attack: 2,
-                                                            health: 2)
+                                                                     cost: 2,
+                                                                     cardClass: .neutral,
+                                                                     set: .classic,
+                                                                     rarity: .rare,
+                                                                     requirements: [],
+                                                                     text: "After you summon a minion, deal 1 damage to a random enemy.",
+                                                                     race: .neutral,
+                                                                     attack: 2,
+                                                                     health: 2)
 
     public init(owner: Player) {
         super.init(constants: KnifeJuggler.constants, owner: owner)
@@ -442,15 +465,15 @@ public class KnifeJuggler: Minion {
 
 public class StampedingKodo: Minion {
     internal static let constants: MinionConstants = MinionConstants(name: "Stampeding Kodo",
-                                                            cost: 5,
-                                                            cardClass: .neutral,
-                                                            set: .classic,
-                                                            rarity: .rare,
-                                                            requirements: [],
-                                                            text: "Battlecry: Destroy a random enemy minion with 2 or less Attack.",
-                                                            race: .beast,
-                                                            attack: 3,
-                                                            health: 5)
+                                                                     cost: 5,
+                                                                     cardClass: .neutral,
+                                                                     set: .classic,
+                                                                     rarity: .rare,
+                                                                     requirements: [],
+                                                                     text: "Battlecry: Destroy a random enemy minion with 2 or less Attack.",
+                                                                     race: .beast,
+                                                                     attack: 3,
+                                                                     health: 5)
 
     public init(owner: Player) {
         super.init(constants: StampedingKodo.constants, owner: owner)
@@ -459,15 +482,15 @@ public class StampedingKodo: Minion {
 
 public class VioletTeacher: Minion {
     internal static let constants: MinionConstants = MinionConstants(name: "Violet Teacher",
-                                                            cost: 4,
-                                                            cardClass: .neutral,
-                                                            set: .classic,
-                                                            rarity: .rare,
-                                                            requirements: [],
-                                                            text: "Whenever you cast a spell, summon a 1/1 Violet Apprentice.",
-                                                            race: .neutral,
-                                                            attack: 3,
-                                                            health: 5)
+                                                                     cost: 4,
+                                                                     cardClass: .neutral,
+                                                                     set: .classic,
+                                                                     rarity: .rare,
+                                                                     requirements: [],
+                                                                     text: "Whenever you cast a spell, summon a 1/1 Violet Apprentice.",
+                                                                     race: .neutral,
+                                                                     attack: 3,
+                                                                     health: 5)
 
     public init(owner: Player) {
         super.init(constants: VioletTeacher.constants, owner: owner)
@@ -476,14 +499,14 @@ public class VioletTeacher: Minion {
 
 public class VioletApprentice: Minion {
     internal static let constants: MinionConstants = MinionConstants(name: "Violet Apprentice",
-                                                            cost: 1,
-                                                            cardClass: .neutral,
-                                                            set: .classic, rarity: .uncollectible,
-                                                            requirements: [],
-                                                            text: "",
-                                                            race: .neutral,
-                                                            attack: 1,
-                                                            health: 1)
+                                                                     cost: 1,
+                                                                     cardClass: .neutral,
+                                                                     set: .classic, rarity: .uncollectible,
+                                                                     requirements: [],
+                                                                     text: "",
+                                                                     race: .neutral,
+                                                                     attack: 1,
+                                                                     health: 1)
 
     public init(owner: Player) {
         super.init(constants: VioletApprentice.constants, owner: owner)
@@ -493,12 +516,12 @@ public class VioletApprentice: Minion {
 // MARK: - Spell
 public class TheCoin: Spell {
     internal static let constants = SpellConstants(name: "The Coin",
-                                          cost: 0,
-                                          cardClass: .neutral,
-                                          set: .basic,
-                                          rarity: .uncollectible,
-                                          requirements: [],
-                                          text: "Gain 1 Mana Crystal this turn only.")
+                                                   cost: 0,
+                                                   cardClass: .neutral,
+                                                   set: .basic,
+                                                   rarity: .uncollectible,
+                                                   requirements: [],
+                                                   text: "Gain 1 Mana Crystal this turn only.")
 
     public init(owner: Player) {
         super.init(constants: TheCoin.constants, owner: owner)
@@ -507,12 +530,12 @@ public class TheCoin: Spell {
 
 public class Frostbolt: Spell {
     internal static let constants = SpellConstants(name: "Frostbolt",
-                                          cost: 3,
-                                          cardClass: .mage,
-                                          set: .basic,
-                                          rarity: .free,
-                                          requirements: [.requiresTargetToPlay],
-                                          text: "Deal 3 damage to a character and Freeze it.")
+                                                   cost: 3,
+                                                   cardClass: .mage,
+                                                   set: .basic,
+                                                   rarity: .free,
+                                                   requirements: [.requiresTargetToPlay],
+                                                   text: "Deal 3 damage to a character and Freeze it.")
 
     public init(owner: Player) {
         super.init(constants: Frostbolt.constants, owner: owner)
@@ -521,12 +544,12 @@ public class Frostbolt: Spell {
 
 public class Cleave: Spell {
     internal static let constants = SpellConstants(name: "Cleave",
-                                          cost: 2,
-                                          cardClass: .warrior,
-                                          set: .basic,
-                                          rarity: .free,
-                                          requirements: [.requiresMinEnemyMinions(2)],
-                                          text: "Deal 2 damage to two random enemy minions.")
+                                                   cost: 2,
+                                                   cardClass: .warrior,
+                                                   set: .basic,
+                                                   rarity: .free,
+                                                   requirements: [.requiresMinEnemyMinions(2)],
+                                                   text: "Deal 2 damage to two random enemy minions.")
 
     public init(owner: Player) {
         super.init(constants: Cleave.constants, owner: owner)
@@ -535,11 +558,11 @@ public class Cleave: Spell {
 
 public class Shatter: Spell {
     internal static let constants = SpellConstants(name: "Shatter",
-                                          cost: 2,
-                                          cardClass: .mage,
-                                          set: .oldGods, rarity: .common,
-                                          requirements: [.requiresFrozenTarget, .requiresMinionTarget, .requiresTargetToPlay],
-                                          text: "Destroy a Frozen minion.")
+                                                   cost: 2,
+                                                   cardClass: .mage,
+                                                   set: .oldGods, rarity: .common,
+                                                   requirements: [.requiresFrozenTarget, .requiresMinionTarget, .requiresTargetToPlay],
+                                                   text: "Destroy a Frozen minion.")
 
     public init(owner: Player) {
         super.init(constants: Shatter.constants, owner: owner)
@@ -551,13 +574,13 @@ public class Shatter: Spell {
 // MARK: - HeroPower
 public class Fireblast: HeroPower {
     internal static let constants = HeroPowerConstants(name: "Fireblast",
-                                              cost: 2,
-                                              cardClass: .mage,
-                                              set: .basic,
-                                              rarity: .uncollectible,
-                                              requirements: [.requiresTargetToPlay],
-                                              text: "Deal 1 damage.")
-
+                                                       cost: 2,
+                                                       cardClass: .mage,
+                                                       set: .basic,
+                                                       rarity: .uncollectible,
+                                                       requirements: [.requiresTargetToPlay],
+                                                       text: "Deal 1 damage.")
+    
     public init(owner: Player) {
         super.init(constants: Fireblast.constants, owner: owner)
     }

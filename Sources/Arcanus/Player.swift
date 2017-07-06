@@ -137,7 +137,7 @@ public class Player {
                 if let minion = card as? Minion {
                     board.add(minion: minion, at: location!)
                 } else if let spell = card as? Spell {
-                    
+
                 }
 
                 break
@@ -156,6 +156,6 @@ public protocol PlayerInterface {
     func startingMulligan()
     func mulliganCard(_ card: Card) -> Bool
     func finishedMulligan()
-
+    
     func nextAction() -> Player.Action
 }

@@ -135,6 +135,7 @@ public class CLIPlayer: PlayerInterface {
             let handOptions = player.hand.contents.map({ $0.description })
             let handPlayabilityList = player.hand.contents.map({$0.playabilityForPlayer(player)})
 
+            // If no cards can be played, just print out hand
             if handPlayability == .no {
                 printOptionList(handOptions, playability: handPlayabilityList)
                 return nextAction()
@@ -157,6 +158,10 @@ public class CLIPlayer: PlayerInterface {
 
                 return .playCard(index: index, location: location, target: nil)
             } else if card is Spell {
+                if card.hasRequirement(.requiresTargetToPlay) {
+                    print("Needs target")
+                }
+
                 return .playCard(index: index, location: nil, target: nil)
             }
         case 1:

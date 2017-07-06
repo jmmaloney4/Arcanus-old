@@ -181,7 +181,7 @@ internal class Board: Sequence, CustomStringConvertible {
     public func minion(at: Int) -> Minion {
         return contents[at]
     }
-
+    
     func makeIterator() -> Deck.Iterator {
         return Deck.Iterator(withBoard: self)
     }
