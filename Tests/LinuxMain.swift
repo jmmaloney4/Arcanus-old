@@ -7,8 +7,9 @@
 
 import XCTest
 
-@testable import ArcanusTests
+import ArcanusTests
 
-XCTMain([
-    testCase(ArcanusTests.allTests)
-    ])
+var tests = [XCTestCaseEntry]()
+tests += ArcanusTests.allTests()
+
+XCTMain(tests)
