@@ -14,7 +14,7 @@ func main() {
         exit(1)
     }
 
-    var p1: Arcanus.PlayerInterface = CLIPlayer()
+    var p1: PlayerInterface = CLIPlayer()
     var p2: PlayerInterface = CLIPlayer()
 
     let game = Game(playerOneInterface: &p1,
