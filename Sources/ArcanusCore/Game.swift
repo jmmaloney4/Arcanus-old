@@ -12,6 +12,7 @@ public class Game {
         var startingHandSizeGoFirst: Int = 3
         var startingHandSizeGoSecond: Int = 4
         var maxManaCrystals: Int = 10
+        var defaultHeroHealth: Int = 30
     }
 
     internal static let defaultRules = Rules()

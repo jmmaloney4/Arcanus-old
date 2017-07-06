@@ -6,6 +6,15 @@
 
 import Foundation
 
+public protocol Character {
+    var attack: Int! { get set }
+    var health: Int! { get set }
+    var maxHealth: Int! { get set }
+    var armor: Int! { get set }
+
+    // var isDead: Bool { get }
+}
+
 public class Card: CustomStringConvertible {
     public enum Class: CustomStringConvertible {
         case neutral
@@ -36,7 +45,7 @@ public class Card: CustomStringConvertible {
             }
         }
 
-        public var symbol: Character {
+        public var symbol: Swift.Character {
             get {
                 switch self {
                 case .neutral: return "¤"
@@ -92,7 +101,7 @@ public class Card: CustomStringConvertible {
             }
         }
 
-        public var symbol: Character {
+        public var symbol: Swift.Character {
             get {
                 switch self {
                 case .uncollectible: return "🚫"
@@ -169,7 +178,6 @@ public class Card: CustomStringConvertible {
 
     fileprivate static let cardIndex: [String: (Player) -> Card] = [
         // Minions
-
         BloodfenRaptor.constants.constants.name:{owner in BloodfenRaptor(owner: owner)},
         KnifeJuggler.constants.constants.name:{owner in KnifeJuggler(owner: owner)},
         StampedingKodo.constants.constants.name:{owner in StampedingKodo(owner: owner)},
@@ -183,7 +191,10 @@ public class Card: CustomStringConvertible {
         Shatter.constants.constants.name:{owner in Shatter(owner: owner)},
 
         // Hero Powers
-        Fireblast.constants.constants.name:{owner in Fireblast(owner: owner)}]
+        Fireblast.constants.constants.name:{owner in Fireblast(owner: owner)},
+
+        // Heros
+        Jaina.constants.constants.name:{owner in Jaina(owner: owner)}]
 
     public static func cardForName(_ name: String, withOwner owner: Player) -> Card? {
         if let factoryFunc = Card.cardIndex[name] {
@@ -229,12 +240,12 @@ public class Card: CustomStringConvertible {
     }
 }
 
-public class Minion: Card {
+public class Minion: Card, Character {
     internal struct MinionConstants {
         var constants: Constants
         var race: Race
-        var attack: Int
         var health: Int
+        var attack: Int
 
         init(name: String,
              cost: Int,
@@ -278,15 +289,19 @@ public class Minion: Card {
         return Card.cardForName(name, withOwner: owner) as? Minion
     }
 
-    var race: Race!
-    var attack: Int!
-    var health: Int!
+    public internal(set) var race: Race!
+    public var attack: Int!
+    public var health: Int!
+    public var maxHealth: Int!
+    public var armor: Int!
 
     fileprivate init(constants: MinionConstants, owner: Player) {
         super.init(constants: constants.constants, owner: owner)
         self.race = constants.race
         self.attack = constants.attack
         self.health = constants.health
+        self.maxHealth = constants.health
+        self.armor = 0
     }
 
     public override var description: String {
@@ -392,9 +407,11 @@ public class HeroPower: Card {
     }
 }
 
-public class Hero: Card {
+public class Hero: Card, Character {
     internal struct HeroConstants {
         var constants: Constants
+        var attack: Int
+        var health: Int
 
         init(name: String,
              cost: Int,
@@ -402,7 +419,9 @@ public class Hero: Card {
              set: Set,
              rarity: Rarity,
              requirements: [PlayRequirement],
-             text: String)
+             text: String,
+             attack: Int,
+             health: Int)
         {
             self.constants = Constants(name: name,
                                        cost: cost,
@@ -410,14 +429,25 @@ public class Hero: Card {
                                        set: set, rarity: rarity,
                                        requirements: requirements,
                                        text: text)
+            self.attack = attack
+            self.health = health
         }
     }
+
+    public var attack: Int!
+    public var health: Int!
+    public var maxHealth: Int!
+    public var armor: Int!
 
     public static func heroForName(_ name: String, withOwner owner: Player) -> Hero? {
         return Card.cardForName(name, withOwner: owner) as? Hero
     }
 
     internal init(constants: HeroConstants, owner: Player) {
+        self.attack = constants.attack
+        self.health = constants.health
+        self.maxHealth = constants.health
+        self.armor = 0
         super.init(constants: constants.constants, owner: owner)
     }
 }
@@ -580,9 +610,24 @@ public class Fireblast: HeroPower {
                                                        rarity: .uncollectible,
                                                        requirements: [.requiresTargetToPlay],
                                                        text: "Deal 1 damage.")
-    
+
     public init(owner: Player) {
         super.init(constants: Fireblast.constants, owner: owner)
     }
 }
 
+// MARK: - Hero
+
+public class Jaina: Hero {
+    internal static let constants = HeroConstants(name: "Jaina Proudmoore",
+                                                  cost: 0,
+                                                  cardClass: .mage,
+                                                  set: .basic,
+                                                  rarity: .uncollectible,
+                                                  requirements: [],
+                                                  text: "", attack: 0, health: 30)
+    
+    public init(owner: Player) {
+        super.init(constants: Jaina.constants, owner: owner)
+    }
+}
