@@ -1,5 +1,4 @@
 env: 
-  DIR=$PWD
   SWIFT_VERSION=swift-3.1.1-RELEASE
 
 matrix:
@@ -8,19 +7,22 @@ matrix:
       dist: trusty
       sudo: required
       language: cpp
-      env: PATH="${PWD}/${SWIFT_VERSION}-ubuntu14.04/usr/bin/:${PATH}"
+      env: URL="https://swift.org/builds/swift-3.1.1-release/ubuntu1404/swift-3.1.1-RELEASE/swift-3.1.1-RELEASE-ubuntu14.04.tar.gz"
     - os: osx
       osx_image: xcode8.3
       language: objective-c
       sudo: required
+      env: URL="https://swift.org/builds/swift-3.1.1-release/xcode/swift-3.1.1-RELEASE/swift-3.1.1-RELEASE-osx.pkg"
       
 script:
   - swift build
   - swift test
   
 before_install:
-  - chmod ugo+x ./InstallSwift.sh
-  - ./InstallSwift.sh
+  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then wget $URL; tar xzf swift-3.1.1-RELEASE-ubuntu14.04.tar.gz; fi
+  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then export PATH="${PWD}/swift-3.1.1-RELEASE-ubuntu14.04/usr/bin/:${PATH}"; fi
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then curl -O $URL; sudo installer -pkg swift-3.1.1-RELEASE-osx.pkg -target /; fi
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then export TOOLCHAINS=swift; fi
   
 notifications:
   email:
