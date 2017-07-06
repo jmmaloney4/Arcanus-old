@@ -8,6 +8,12 @@ import XCTest
 @testable import Arcanus
 
 class ArcanusTests: XCTestCase {
+    static var allTests = {
+        return [
+            ("testTests", testTests),
+        ]
+    }()
+    
     func testTests() {
         XCTAssert(true, "Tests Are Not Working")
     }
