@@ -14,8 +14,8 @@ script:
   - swift test
   
 before_install:
-  - chmod ugo+x ./Scripts/InstallSwift.sh
-  - . ./Scripts/InstallSwift.sh
+  - chmod ugo+x ./InstallSwift.sh
+  - ./InstallSwift.sh
   
 notifications:
   email:
