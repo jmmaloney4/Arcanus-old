@@ -6,28 +6,8 @@
 
 import Foundation
 
-public class Weapon: Card {
-    internal struct WeaponConstants {
-        var constants: Constants
-
-        init(name: String,
-             cost: Int,
-             cardClass: Class,
-             set: Set,
-             rarity: Rarity,
-             requirements: [PlayRequirement],
-             text: String)
-        {
-            self.constants = Constants(name: name,
-                                       cost: cost,
-                                       cardClass: cardClass,
-                                       set: set,
-                                       rarity: rarity,
-                                       requirements: requirements,
-                                       text: text)
-        }
-    }
-
+public protocol Weapon: Card {
+    /*
     public static func weaponForName(_ name: String, withOwner owner: Player) -> Weapon? {
         return Card.cardForName(name, withOwner: owner) as? Weapon
     }
@@ -35,4 +15,5 @@ public class Weapon: Card {
     internal init(constants: WeaponConstants, owner: Player) {
         super.init(constants: constants.constants, owner: owner)
     }
+     */
 }

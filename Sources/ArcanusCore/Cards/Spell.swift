@@ -6,28 +6,9 @@
 
 import Foundation
 
-public class Spell: Card {
-    internal struct SpellConstants {
-        var constants: Constants
+public protocol Spell: Card {
 
-        init(name: String,
-             cost: Int,
-             cardClass: Class,
-             set: Set,
-             rarity: Rarity,
-             requirements: [PlayRequirement],
-             text: String)
-        {
-            self.constants = Constants(name: name,
-                                       cost: cost,
-                                       cardClass: cardClass,
-                                       set: set,
-                                       rarity: rarity,
-                                       requirements: requirements,
-                                       text: text)
-        }
-    }
-
+    /*
     public static func spellForName(_ name: String, withOwner owner: Player) -> Spell? {
         return Card.cardForName(name, withOwner: owner) as? Spell
     }
@@ -35,4 +16,5 @@ public class Spell: Card {
     internal init(constants: SpellConstants, owner: Player) {
         super.init(constants: constants.constants, owner: owner)
     }
+     */
 }

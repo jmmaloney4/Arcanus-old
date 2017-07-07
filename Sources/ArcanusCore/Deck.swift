@@ -8,30 +8,30 @@ import Foundation
 
 internal class Deck: Sequence, CustomStringConvertible {
     private(set) public var contents: [Card] = []
-    public var count: Int {
-        get {
-            return contents.count
-        }
-    }
+    public var count: Int { get { return contents.count } }
     public var description: String { return contents.map({$0.description}).joined(separator: "\n") }
     public weak var player: Player!
 
-    init?(path: String, player: Player) {
+    init(path: String, player: Player) throws {
         self.player = player
 
         guard let fileData = try? String(contentsOfFile: path, encoding: .utf8) else {
-            return nil
+            throw ARError.readingFileFailed(path: path)
         }
 
         let entries = fileData.components(separatedBy: .newlines)
 
         if entries.count < Game.defaultRules.cardsInDeck {
-            return nil
+            throw ARError.invalidFormat
         }
 
         let usableEntries = entries.prefix(Game.defaultRules.cardsInDeck)
         for entry in usableEntries {
-            contents.append(Card.cardForName(entry, withOwner: self.player)!)
+            if let card = getCardForName(entry, withOwner: self.player) {
+                contents.append(card)
+            } else {
+                throw ARError.cardDoesNotExist(name: entry)
+            }
         }
     }
 

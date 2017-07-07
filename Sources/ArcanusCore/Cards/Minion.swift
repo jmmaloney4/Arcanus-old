@@ -6,60 +6,29 @@
 
 import Foundation
 
-public class Minion: Card, Character {
-    internal struct MinionConstants {
-        var constants: Constants
-        var race: Race
-        var health: Int
-        var attack: Int
+public enum Race: CustomStringConvertible {
+    case neutral
+    case beast
 
-        init(name: String,
-             cost: Int,
-             cardClass: Class,
-             set: Set,
-             rarity: Rarity,
-             requirements: [PlayRequirement],
-             text: String,
-             race: Race,
-             attack: Int,
-             health: Int)
-        {
-            self.constants = Constants(name: name,
-                                       cost: cost,
-                                       cardClass: cardClass,
-                                       set: set,
-                                       rarity: rarity,
-                                       requirements: requirements,
-                                       text: text)
-            self.race = race
-            self.attack = attack
-            self.health = health
-        }
-    }
-
-    public enum Race: CustomStringConvertible {
-        case neutral
-        case beast
-
-        public var description: String {
-            get {
-                switch self {
-                case .neutral: return "Neutral"
-                case .beast: return "Beast"
-                }
+    public var description: String {
+        get {
+            switch self {
+            case .neutral: return "Neutral"
+            case .beast: return "Beast"
             }
         }
     }
+}
 
+public protocol Minion: Character {
+
+    var race: Race { get }
+
+    /*
     public static func minionForName(_ name: String, withOwner owner: Player) -> Minion? {
         return Card.cardForName(name, withOwner: owner) as? Minion
     }
 
-    public internal(set) var race: Race!
-    public var attack: Int!
-    public var health: Int!
-    public var maxHealth: Int!
-    public var armor: Int!
 
     internal init(constants: MinionConstants, owner: Player) {
         super.init(constants: constants.constants, owner: owner)
@@ -78,5 +47,6 @@ public class Minion: Card, Character {
         rv.append("\(cost!) Mana, \(attack!)/\(health!)) [\(text!)]")
         return rv
     }
+     */
 }
 

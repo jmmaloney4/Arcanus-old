@@ -6,7 +6,7 @@
 
 import Foundation
 
-fileprivate func symbolForCardPlayability(_ playability: Card.Playability) -> String {
+fileprivate func symbolForCardPlayability(_ playability: Playability) -> String {
     switch playability {
     case .no:
         return "✘"
@@ -65,10 +65,10 @@ public class CLIPlayer: PlayerInterface {
         }
     }
 
-    func printOptionList(_ options: [String], playability passedPlayability: [Card.Playability]? = nil) {
-        var playability: [Card.Playability]
+    func printOptionList(_ options: [String], playability passedPlayability: [Playability]? = nil) {
+        var playability: [Playability]
         if passedPlayability == nil {
-            playability = Array(repeating: Card.Playability.yes, count: options.count)
+            playability = Array(repeating: Playability.yes, count: options.count)
         } else {
             playability = passedPlayability!
         }
@@ -88,10 +88,10 @@ public class CLIPlayer: PlayerInterface {
     }
 
     func optionPrompt(_ options: [String],
-                      playability passedPlayability: [Card.Playability]? = nil) -> Int {
-        var playability: [Card.Playability]
+                      playability passedPlayability: [Playability]? = nil) -> Int {
+        var playability: [Playability]
         if passedPlayability == nil {
-            playability = Array(repeating: Card.Playability.yes, count: options.count)
+            playability = Array(repeating: Playability.yes, count: options.count)
         } else {
             playability = passedPlayability!
         }
@@ -134,7 +134,7 @@ public class CLIPlayer: PlayerInterface {
                              playability: [handPlayability == .no ? .withEffect : .yes, .no, .no, .no, .withEffect])) {
         case 0:
             let handOptions = player.hand.contents.map({ $0.description })
-            let handPlayabilityList = player.hand.contents.map({$0.playabilityForPlayer(player)})
+            let handPlayabilityList = player.hand.contents.map({ $0.playability })
 
             // If no cards can be played, just print out hand
             if handPlayability == .no {
@@ -159,12 +159,12 @@ public class CLIPlayer: PlayerInterface {
 
                 return .playCard(index: index, location: location, target: nil)
             } else if card is Spell {
-                if card.hasRequirement(.requiresTargetToPlay) {
+                /*if card.hasRequirement(.requiresTargetToPlay) {
                     print("Needs target")
 
                     // var targets = player.game.charactersInPlay.filter({})
                 }
-
+                 */
                 return .playCard(index: index, location: nil, target: nil)
             }
         case 1:

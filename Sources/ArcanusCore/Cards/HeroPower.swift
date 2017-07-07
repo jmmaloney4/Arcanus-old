@@ -6,28 +6,9 @@
 
 import Foundation
 
-public class HeroPower: Card {
-    internal struct HeroPowerConstants {
-        var constants: Constants
+public protocol HeroPower: Card {
 
-        init(name: String,
-             cost: Int,
-             cardClass: Class,
-             set: Set,
-             rarity: Rarity,
-             requirements: [PlayRequirement],
-             text: String)
-        {
-            self.constants = Constants(name: name,
-                                       cost: cost,
-                                       cardClass: cardClass,
-                                       set: set,
-                                       rarity: rarity,
-                                       requirements: requirements,
-                                       text: text)
-        }
-    }
-
+    /*
     public static func heroPowerForName(_ name: String, withOwner owner: Player) -> HeroPower? {
         return Card.cardForName(name, withOwner: owner) as? HeroPower
     }
@@ -35,4 +16,5 @@ public class HeroPower: Card {
     internal init(constants: HeroPowerConstants, owner: Player) {
         super.init(constants: constants.constants, owner: owner)
     }
+     */
 }

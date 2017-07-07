@@ -45,15 +45,21 @@ public class Player {
          isGoingFirst: Bool,
          interface: inout PlayerInterface,
          deckPath: String,
-         game: Game)
+         game: Game) throws
     {
         self.isPlayerOne = isPlayerOne
         goingFirst = isGoingFirst
         self.interface = interface
         board = Board()
         self.game = game
+
         // self.hero = Hero.defaultHeroForClass(.mage, owner: self)
-        self.deck = Deck(path: deckPath, player: self)!
+        do {
+            self.deck = try Deck(path: deckPath, player: self)
+        } catch {
+            throw error
+        }
+
         hand = deck.startingHand(ofSize: goingFirst ? Game.defaultRules.startingHandSizeGoFirst : Game.defaultRules.startingHandSizeGoSecond)!
 
         self.interface.player = self
@@ -94,10 +100,10 @@ public class Player {
         case endTurn
     }
 
-    func playabilityOfHand() -> Card.Playability {
-        var rv: Card.Playability = .no
+    func playabilityOfHand() -> Playability {
+        var rv: Playability = .no
         for card in hand {
-            switch card.playabilityForPlayer(self) {
+            switch card.playability {
             case .yes:
                 rv = .yes
             case .withEffect:

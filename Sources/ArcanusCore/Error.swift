@@ -4,13 +4,8 @@
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-import Foundation
-
-public protocol Character: Card {
-    var attack: Int { get }
-    var health: Int { get }
-    var maxHealth: Int { get }
-    var armor: Int { get }
-
-    // var isDead: Bool { get }
+public enum ARError: Error {
+    case cardDoesNotExist(name: String)
+    case readingFileFailed(path: String)
+    case invalidFormat
 }

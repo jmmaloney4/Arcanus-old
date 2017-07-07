@@ -6,38 +6,9 @@
 
 import Foundation
 
-public class Hero: Card, Character {
-    internal struct HeroConstants {
-        var constants: Constants
-        var attack: Int
-        var health: Int
-
-        init(name: String,
-             cost: Int,
-             cardClass: Class,
-             set: Set,
-             rarity: Rarity,
-             requirements: [PlayRequirement],
-             text: String,
-             attack: Int,
-             health: Int)
-        {
-            self.constants = Constants(name: name,
-                                       cost: cost,
-                                       cardClass: cardClass,
-                                       set: set, rarity: rarity,
-                                       requirements: requirements,
-                                       text: text)
-            self.attack = attack
-            self.health = health
-        }
-    }
-
-    public var attack: Int!
-    public var health: Int!
-    public var maxHealth: Int!
-    public var armor: Int!
-
+public protocol Hero: Character {
+ 
+    /*
     public static func heroForName(_ name: String, withOwner owner: Player) -> Hero? {
         return Card.cardForName(name, withOwner: owner) as? Hero
     }
@@ -49,4 +20,5 @@ public class Hero: Card, Character {
         self.armor = 0
         super.init(constants: constants.constants, owner: owner)
     }
+     */
 }

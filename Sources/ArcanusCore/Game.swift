@@ -40,13 +40,13 @@ public class Game {
 
         self.addEvent(.initGame(Game.defaultRules))
 
-        players.append(Player(isPlayerOne: true,
+        players.append(try! Player(isPlayerOne: true,
                               isGoingFirst: firstPlayer == 0,
                               interface: &interfacePlayer1,
                               deckPath: deckPathPlayer1,
                               game: self))
 
-        players.append(Player(isPlayerOne: false,
+        players.append(try! Player(isPlayerOne: false,
                               isGoingFirst: firstPlayer == 1,
                               interface: &interfacePlayer2,
                               deckPath: deckPathPlayer2,
@@ -89,9 +89,9 @@ public class Game {
     }
 
     // -1 so when incremented first card will have id = 0
-    private var cardID = -1
-    func getNextCardID() -> Int {
-        cardID += 1
-        return cardID
+    private var entityID = -1
+    func getNextEntityID() -> Int {
+        entityID += 1
+        return entityID
     }
 }
