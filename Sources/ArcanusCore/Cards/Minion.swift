@@ -27,7 +27,7 @@ public protocol Minion: Character {
 extension Minion {
     public var description: String {
         get {
-            var rv = "\(name) (ID: \(id)) (\(rarity.symbol), "
+            var rv = "\(name) (ID: \(id), owner: \(owner.goingFirst ? 1 : 2)) (\(rarity.symbol), "
             if race != .neutral {
                 rv.append("\(race), ")
             }

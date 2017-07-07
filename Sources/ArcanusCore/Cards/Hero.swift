@@ -16,5 +16,13 @@ func getDefaultHeroForClass(_ cardClass: Class, owner: Player) -> Hero? {
 }
 
 public protocol Hero: Character {
+    
+}
 
+extension Hero {
+    public var description: String {
+        get {
+            return "\(name) (ID: \(id), owner: \(owner.goingFirst ? 1 : 2), \(cost) Mana, \(health) Health, \(armor) Armor) [\(text)]"
+        }
+    }
 }

@@ -198,13 +198,15 @@ public protocol Card: CustomStringConvertible {
 }
 
 extension Card {
-    public var description: String { get {
-        return "\(name) (ID: \(id), player: \(owner.goingFirst ? 1 : 2)) (\(cost) Mana) [\(text)]"
+    public var description: String {
+        get {
+            return "\(name) (ID: \(id), owner: \(owner.goingFirst ? 1 : 2)) (\(cost) Mana) [\(text)]"
         }
     }
 
-    public var playability: Playability { get {
-        return owner.mana >= cost ? .yes : .no
+    public var playability: Playability {
+        get {
+            return owner.mana >= cost ? .yes : .no
         }
     }
 

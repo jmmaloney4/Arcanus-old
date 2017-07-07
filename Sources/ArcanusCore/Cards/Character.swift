@@ -12,5 +12,7 @@ public protocol Character: Card {
     var maxHealth: Int { get }
     var armor: Int { get }
 
-    // var isDead: Bool { get }
+    func damage(_ amount: Int)
+
+    var isDead: Bool { get }
 }

@@ -138,7 +138,7 @@ public class Player {
                     print("Cast \(spell)")
                     if let targeter = spell as? Targeter {
                         let target = interface.selectTarget(targeter.avaliableTargets())
-                        print(target)
+                        try! spell.executeSpellText(onTarget: target)
                     }
                 }
 

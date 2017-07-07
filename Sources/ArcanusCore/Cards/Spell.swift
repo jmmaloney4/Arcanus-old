@@ -7,5 +7,5 @@
 import Foundation
 
 public protocol Spell: Card {
-
+    func executeSpellText(onTarget target: Character?) throws
 }

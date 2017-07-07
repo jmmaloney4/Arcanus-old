@@ -27,10 +27,18 @@ public class BloodfenRaptor: Minion {
     public var health: Int = BloodfenRaptor.health
     public var maxHealth: Int = BloodfenRaptor.health
     public var armor: Int = 0
+    public private(set) var isDead: Bool = false
 
     public init(owner: Player) {
         self.owner = owner
         self.id = owner.game.getNextEntityID()
+    }
+
+    public func damage(_ amount: Int) {
+        health -= amount
+        if health <= 0 {
+            isDead = true
+        }
     }
 }
 
@@ -51,6 +59,10 @@ public class TheCoin: Spell {
     public init(owner: Player) {
         self.owner = owner
         self.id = owner.game.getNextEntityID()
+    }
+
+    public func executeSpellText(onTarget target: Character? = nil) throws {
+        
     }
 }
 
@@ -77,6 +89,13 @@ public class Frostbolt: Spell, Targeter {
     public func avaliableTargets() -> [Character] {
         return owner.game.charactersInPlay
     }
+
+    public func executeSpellText(onTarget target: Character? = nil) throws {
+        if target == nil {
+            throw ARError.invalidTarget
+        }
+        target?.damage(3)
+    }
 }
 
 public class Jaina: Hero {
@@ -98,9 +117,17 @@ public class Jaina: Hero {
     public var health: Int = Jaina.health
     public var maxHealth: Int = Jaina.health
     public var armor: Int = 0
+    public private(set) var isDead: Bool = false
 
     public init(owner: Player) {
         self.owner = owner
         self.id = owner.game.getNextEntityID()
+    }
+
+    public func damage(_ amount: Int) {
+        health -= amount
+        if health <= 0 {
+            isDead = true
+        }
     }
 }
