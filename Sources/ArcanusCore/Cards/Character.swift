@@ -12,7 +12,9 @@ public protocol Character: Card {
     var maxHealth: Int { get }
     var armor: Int { get }
 
-    func takeDamage(_ amount: Int, from source: Card)
-
     var isDead: Bool { get }
+    var isFrozen: Bool { get }
+
+    func takeDamage(_ amount: Int, from source: Card)
+    func frozenBy(_ source: Card)
 }

@@ -196,6 +196,7 @@ public protocol Card: CustomStringConvertible {
 
     func hasRequirement(_ req: PlayRequirement) -> Bool
     func dealDamage(amount: Int, to target: Character)
+    func freeze(target: Character)
 }
 
 extension Card {
@@ -218,4 +219,9 @@ extension Card {
     public func dealDamage(amount: Int, to target: Character) {
         target.takeDamage(amount, from: self)
     }
+
+    public func freeze(target: Character) {
+        target.frozenBy(self)
+    }
+
 }

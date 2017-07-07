@@ -28,6 +28,7 @@ public class BloodfenRaptor: Minion {
     public var maxHealth: Int = BloodfenRaptor.health
     public var armor: Int = 0
     public private(set) var isDead: Bool = false
+    public private(set) var isFrozen: Bool = false
 
     public init(owner: Player) {
         self.owner = owner
@@ -39,6 +40,10 @@ public class BloodfenRaptor: Minion {
         if health <= 0 {
             isDead = true
         }
+    }
+
+    public func frozenBy(_ source: Card) {
+        isFrozen = true
     }
 }
 
@@ -95,6 +100,7 @@ public class Frostbolt: Spell, Targeter {
             throw ARError.invalidTarget
         }
         self.dealDamage(amount: 3, to: target!)
+        self.freeze(target: target!)
     }
 }
 
@@ -118,6 +124,7 @@ public class Jaina: Hero {
     public var maxHealth: Int = Jaina.health
     public var armor: Int = 0
     public private(set) var isDead: Bool = false
+    public private(set) var isFrozen: Bool = false
 
     public init(owner: Player) {
         self.owner = owner
@@ -129,5 +136,9 @@ public class Jaina: Hero {
         if health <= 0 {
             isDead = true
         }
+    }
+
+    public func frozenBy(_ source: Card) {
+        isFrozen = true
     }
 }
