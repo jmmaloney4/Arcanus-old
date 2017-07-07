@@ -34,7 +34,7 @@ public class BloodfenRaptor: Minion {
         self.id = owner.game.getNextEntityID()
     }
 
-    public func damage(_ amount: Int) {
+    public func takeDamage(_ amount: Int, from soruce: Card) {
         health -= amount
         if health <= 0 {
             isDead = true
@@ -94,7 +94,7 @@ public class Frostbolt: Spell, Targeter {
         if target == nil {
             throw ARError.invalidTarget
         }
-        target?.damage(3)
+        self.dealDamage(amount: 3, to: target!)
     }
 }
 
@@ -124,7 +124,7 @@ public class Jaina: Hero {
         self.id = owner.game.getNextEntityID()
     }
 
-    public func damage(_ amount: Int) {
+    public func takeDamage(_ amount: Int, from source: Card) {
         health -= amount
         if health <= 0 {
             isDead = true

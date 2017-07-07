@@ -195,6 +195,7 @@ public protocol Card: CustomStringConvertible {
     var playability: Playability { get }
 
     func hasRequirement(_ req: PlayRequirement) -> Bool
+    func dealDamage(amount: Int, to target: Character)
 }
 
 extension Card {
@@ -212,5 +213,9 @@ extension Card {
 
     public func hasRequirement(_ req: PlayRequirement) -> Bool {
         return requirements.contains(req)
+    }
+
+    public func dealDamage(amount: Int, to target: Character) {
+        target.takeDamage(amount, from: self)
     }
 }
