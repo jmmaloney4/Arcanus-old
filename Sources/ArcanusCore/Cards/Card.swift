@@ -111,7 +111,7 @@ public enum Playability {
     case withEffect
 }
 
-public enum PlayRequirement {
+public enum PlayRequirement: Equatable {
     case requiresTargetToPlay
     case requiresMinionTarget
     case requiresFriendlyTarget
@@ -150,65 +150,29 @@ public func getCardForName(_ name: String, withOwner owner: Player) -> Card? {
     } else {
         return nil
     }
+}
 
+public func getMinionForName(_ name: String, withOwner owner: Player) -> Minion? {
+    return getCardForName(name, withOwner: owner) as? Minion
+}
+
+public func getSpellForName(_ name: String, withOwner owner: Player) -> Spell? {
+    return getCardForName(name, withOwner: owner) as? Spell
+}
+
+public func getWeaponForName(_ name: String, withOwner owner: Player) -> Weapon? {
+    return getCardForName(name, withOwner: owner) as? Weapon
+}
+
+public func getHeroPowerForName(_ name: String, withOwner owner: Player) -> HeroPower? {
+    return getCardForName(name, withOwner: owner) as? HeroPower
+}
+
+public func getHeroForName(_ name: String, withOwner owner: Player) -> Hero? {
+    return getCardForName(name, withOwner: owner) as? Hero
 }
 
 public protocol Card: CustomStringConvertible {
-/*
-    internal static let cardIndex: [String: (Player) -> Card] = [
-        // Minions
-        BloodfenRaptor.constants.constants.name:{owner in BloodfenRaptor(owner: owner)},
-        KnifeJuggler.constants.constants.name:{owner in KnifeJuggler(owner: owner)},
-        StampedingKodo.constants.constants.name:{owner in StampedingKodo(owner: owner)},
-        VioletTeacher.constants.constants.name:{owner in VioletTeacher(owner: owner)},
-        VioletApprentice.constants.constants.name:{owner in VioletApprentice(owner: owner)},
-
-        // Spells
-        TheCoin.constants.constants.name:{owner in TheCoin(owner: owner)},
-        Frostbolt.constants.constants.name:{owner in Frostbolt(owner: owner)},
-        Cleave.constants.constants.name:{owner in Cleave(owner: owner)},
-        Shatter.constants.constants.name:{owner in Shatter(owner: owner)},
-
-        // Hero Powers
-        Fireblast.constants.constants.name:{owner in Fireblast(owner: owner)},
-
-        // Heros
-        Jaina.constants.constants.name:{owner in Jaina(owner: owner)}]
-
-    public static func cardForName(_ name: String, withOwner owner: Player) -> Card? {
-        if let factoryFunc = Card.cardIndex[name] {
-            return factoryFunc(owner)
-        } else {
-            return nil
-        }
-    }
-
-
-
-    func playabilityForPlayer(_ player: Player) -> Playability {
-        if player.mana >= cost {
-            return .yes
-        }
-        return .no
-    }
-
-    internal init(constants: Constants, owner: Player) {
-        self.owner = owner
-        self.id = self.owner.game.getNextCardID()
-        self.name = constants.name
-        self.cost = constants.cost
-        self.cardClass = constants.cardClass
-        self.set = constants.set
-        self.rarity = constants.rarity
-        self.text = constants.text
-        self.requirements = constants.requirements
-    }
-
-    public func hasRequirement(_ req: PlayRequirement) -> Bool {
-        return self.requirements.contains(where: {$0 == req})
-    }
-*/
-
     var owner: Player { get }
     var id: Int { get }
     var name: String { get }
@@ -220,4 +184,16 @@ public protocol Card: CustomStringConvertible {
     var requirements: [PlayRequirement] { get }
 
     var playability: Playability { get }
+}
+
+extension Card {
+    public var description: String { get {
+            return "\(name) (ID: \(id)) (\(cost) Mana) [\(text)]"
+        }
+    }
+
+    public var playability: Playability { get {
+        return owner.mana >= cost ? .yes : .no
+        }
+    }
 }

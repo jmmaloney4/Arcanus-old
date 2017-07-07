@@ -8,13 +8,4 @@ import Foundation
 
 public protocol Spell: Card {
 
-    /*
-    public static func spellForName(_ name: String, withOwner owner: Player) -> Spell? {
-        return Card.cardForName(name, withOwner: owner) as? Spell
-    }
-
-    internal init(constants: SpellConstants, owner: Player) {
-        super.init(constants: constants.constants, owner: owner)
-    }
-     */
 }

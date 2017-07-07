@@ -57,7 +57,7 @@ public class Game {
     public func start() {
         // players[0].runMulligan()
         // players[1].runMulligan()
-
+        
         hasStarted = true
 
         while !hasEnded {

@@ -8,13 +8,4 @@ import Foundation
 
 public protocol HeroPower: Card {
 
-    /*
-    public static func heroPowerForName(_ name: String, withOwner owner: Player) -> HeroPower? {
-        return Card.cardForName(name, withOwner: owner) as? HeroPower
-    }
-
-    internal init(constants: HeroPowerConstants, owner: Player) {
-        super.init(constants: constants.constants, owner: owner)
-    }
-     */
 }

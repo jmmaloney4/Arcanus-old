@@ -21,32 +21,19 @@ public enum Race: CustomStringConvertible {
 }
 
 public protocol Minion: Character {
-
     var race: Race { get }
-
-    /*
-    public static func minionForName(_ name: String, withOwner owner: Player) -> Minion? {
-        return Card.cardForName(name, withOwner: owner) as? Minion
-    }
-
-
-    internal init(constants: MinionConstants, owner: Player) {
-        super.init(constants: constants.constants, owner: owner)
-        self.race = constants.race
-        self.attack = constants.attack
-        self.health = constants.health
-        self.maxHealth = constants.health
-        self.armor = 0
-    }
-
-    public override var description: String {
-        var rv = "\(name!) (ID: \(id)) (\(rarity.symbol), "
-        if race != .neutral {
-            rv.append("\(race!), ")
-        }
-        rv.append("\(cost!) Mana, \(attack!)/\(health!)) [\(text!)]")
-        return rv
-    }
-     */
 }
 
+extension Minion {
+    public var description: String {
+        get {
+            var rv = "\(name) (ID: \(id)) (\(rarity.symbol), "
+            if race != .neutral {
+                rv.append("\(race), ")
+            }
+            rv.append("\(cost) Mana, \(attack)/\(health)) [\(text)]")
+            return rv
+        }
+    }
+    // public var description: String { get { return "\(name) (ID: \(id)) (\(cost) Mana, \(attack)/\(health)) [\(text)]" } }
+}

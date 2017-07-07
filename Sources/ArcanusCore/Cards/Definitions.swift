@@ -22,23 +22,15 @@ public class BloodfenRaptor: Minion {
     public var rarity: Rarity { get { return .free } }
     public var text: String { get { return "" } }
     public var requirements: [PlayRequirement] { get { return [] } }
-    public var race: Race { get { return .neutral } }
+    public var race: Race { get { return .beast } }
     public var attack: Int = BloodfenRaptor.attack
     public var health: Int = BloodfenRaptor.health
     public var maxHealth: Int = BloodfenRaptor.health
     public var armor: Int = 0
 
-    public var playability: Playability { get {
-        return owner.mana >= cost ? .yes : .no
-        }
-    }
-
-    public var description: String { get { return "\(name) (ID: \(id)) (\(cost) Mana, \(attack)/\(health)) [\(text)]" } }
-
     public init(owner: Player) {
         self.owner = owner
         self.id = owner.game.getNextEntityID()
-        
     }
 }
 
@@ -56,14 +48,7 @@ public class TheCoin: Spell {
     public var text: String { get { return "Gain 1 Mana Crystal this turn only." } }
     public var requirements: [PlayRequirement] { get { return [] } }
 
-    public var playability: Playability { get {
-        return owner.mana >= cost ? .yes : .no
-        }
-    }
-
-    public var description: String { get { return "\(name) (ID: \(id)) (\(cost) Mana) [\(text)]" } }
-
-    init(owner: Player) {
+    public init(owner: Player) {
         self.owner = owner
         self.id = owner.game.getNextEntityID()
     }

@@ -7,18 +7,5 @@
 import Foundation
 
 public protocol Hero: Character {
- 
-    /*
-    public static func heroForName(_ name: String, withOwner owner: Player) -> Hero? {
-        return Card.cardForName(name, withOwner: owner) as? Hero
-    }
 
-    internal init(constants: HeroConstants, owner: Player) {
-        self.attack = constants.attack
-        self.health = constants.health
-        self.maxHealth = constants.health
-        self.armor = 0
-        super.init(constants: constants.constants, owner: owner)
-    }
-     */
 }

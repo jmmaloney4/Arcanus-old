@@ -21,6 +21,7 @@ func main() {
                         deckPath: CommandLine.arguments[1],
                         playerTwoInterface: &p2,
                         deckPath: CommandLine.arguments[1])
+
     game.start()
  
 }
