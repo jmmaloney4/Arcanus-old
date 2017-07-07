@@ -6,6 +6,15 @@
 
 import Foundation
 
+func getDefaultHeroForClass(_ cardClass: Class, owner: Player) -> Hero? {
+    switch cardClass {
+    case .mage:
+        return Jaina(owner: owner)
+    default:
+        return nil
+    }
+}
+
 public protocol Hero: Character {
 
 }

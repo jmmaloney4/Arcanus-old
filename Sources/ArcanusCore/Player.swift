@@ -53,7 +53,7 @@ public class Player {
         board = Board()
         self.game = game
 
-        // self.hero = Hero.defaultHeroForClass(.mage, owner: self)
+        self.hero = getDefaultHeroForClass(.mage, owner: self)!
         do {
             self.deck = try Deck(path: deckPath, player: self)
         } catch {
@@ -98,23 +98,6 @@ public class Player {
         case minionCombat
         case heroCombat
         case endTurn
-    }
-
-    func playabilityOfHand() -> Playability {
-        var rv: Playability = .no
-        for card in hand {
-            switch card.playability {
-            case .yes:
-                rv = .yes
-            case .withEffect:
-                if rv == .no {
-                    rv = .withEffect
-                }
-            default:
-                break
-            }
-        }
-        return rv
     }
 
     func takeTurn(_ turn: Int) {

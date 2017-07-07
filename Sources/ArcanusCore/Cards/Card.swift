@@ -141,7 +141,9 @@ public enum PlayRequirement: Equatable {
 }
 
 fileprivate let GlobalCardIndex: [String: (Player) -> Card] = [
-    BloodfenRaptor.name: {owner in BloodfenRaptor(owner: owner)}
+    BloodfenRaptor.name: {BloodfenRaptor(owner: $0)},
+
+    TheCoin.name: {TheCoin(owner: $0)}
 ]
 
 public func getCardForName(_ name: String, withOwner owner: Player) -> Card? {
@@ -184,6 +186,8 @@ public protocol Card: CustomStringConvertible {
     var requirements: [PlayRequirement] { get }
 
     var playability: Playability { get }
+
+    func hasRequirement(_ req: PlayRequirement) -> Bool
 }
 
 extension Card {
@@ -195,5 +199,9 @@ extension Card {
     public var playability: Playability { get {
         return owner.mana >= cost ? .yes : .no
         }
+    }
+
+    public func hasRequirement(_ req: PlayRequirement) -> Bool {
+        return requirements.contains(req)
     }
 }

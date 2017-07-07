@@ -41,7 +41,7 @@ public class TheCoin: Spell {
     public var owner: Player
     public var id: Int
     public var name: String { get { return TheCoin.name } }
-    public var cost: Int { get { return 0 } }
+    public var cost: Int { get { return TheCoin.cost } }
     public var cardClass: Class { get { return .neutral } }
     public var set: Set { get { return .basic } }
     public var rarity: Rarity { get { return .free } }
@@ -54,3 +54,28 @@ public class TheCoin: Spell {
     }
 }
 
+public class Jaina: Hero {
+    static let name = "Jaina Proudmoore"
+    static let cost = 0
+    static let health = 30
+    static let attack = 0
+
+    public var owner: Player
+    public var id: Int
+    public var name: String { get { return Jaina.name } }
+    public var cost: Int { get { return Jaina.cost } }
+    public var cardClass: Class { get { return .mage } }
+    public var set: Set { get { return .basic } }
+    public var rarity: Rarity { get { return .free } }
+    public var text: String { get { return "" } }
+    public var requirements: [PlayRequirement] { get { return [] } }
+    public var attack: Int = Jaina.attack
+    public var health: Int = Jaina.health
+    public var maxHealth: Int = Jaina.health
+    public var armor: Int = 0
+
+    public init(owner: Player) {
+        self.owner = owner
+        self.id = owner.game.getNextEntityID()
+    }
+}

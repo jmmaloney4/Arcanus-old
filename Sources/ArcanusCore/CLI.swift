@@ -129,7 +129,7 @@ public class CLIPlayer: PlayerInterface {
         print("Avaliable: \(player.mana), Used: \(player.usedMana), Locked: \(player.lockedMana), Overloaded: \(player.overloadedMana)")
         print("In Play: \(player.game.charactersInPlay)")
 
-        let handPlayability = player.playabilityOfHand()
+        let handPlayability = player.hand.overallPlayability()
         switch (optionPrompt(["Play Card", "Use Hero Power", "Minion Combat", "Hero Combat", "End Turn"],
                              playability: [handPlayability == .no ? .withEffect : .yes, .no, .no, .no, .withEffect])) {
         case 0:

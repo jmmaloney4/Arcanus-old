@@ -47,6 +47,21 @@ internal class Hand: Sequence, CustomStringConvertible {
         contents.append(card)
     }
 
+    /// Returns .yes if any of the cards in this hand are .yes or .withEffect, 
+    /// otherwise returns .no
+    public func overallPlayability() -> Playability {
+        return contents.reduce(Playability.no, { result, next in
+            switch next.playability {
+            case .yes:
+                return .yes
+            case .withEffect:
+                return .yes
+            case .no:
+                return result
+            }
+        })
+    }
+
     struct Iterator: IteratorProtocol {
         private var storage: Hand
         private var index: Int = 0

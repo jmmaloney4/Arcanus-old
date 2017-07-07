@@ -68,7 +68,7 @@ public class Game {
 
     public var charactersInPlay: [Character] {
         get {
-            var rv: [Character] = [] // [players[0].hero, players[1].hero]
+            var rv: [Character] = [players[0].hero, players[1].hero]
             for p in players {
                 for c in p.board {
                     rv.append(c)
