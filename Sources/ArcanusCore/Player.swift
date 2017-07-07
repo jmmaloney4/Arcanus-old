@@ -93,7 +93,7 @@ public class Player {
     }
 
     public enum Action {
-        case playCard(index: Int, location: Int?, target: Card?)
+        case playCard
         case heroPower
         case minionCombat
         case heroCombat
@@ -119,16 +119,27 @@ public class Player {
         while true {
             let action = interface.nextAction()
             switch action {
-            case .playCard(let index, let location, _):
+            case .playCard:
+                let index = interface.whichCardToPlay()
                 let card = hand.removeCard(at: index)!
                 if !spendMana(card.cost) {
-                    assert(false, "Failed to play card \(card)")
+                    interface.error(.notEnoughMana)
+                    continue;
                 }
 
                 if let minion = card as? Minion {
-                    board.insert(minion, at: location!)
+                    let location = interface.whereToPlayMinion(minion)
+                    if let targeter = minion as? Targeter {
+                        print("Targets: \(targeter.avaliableTargets())")
+                    }
+
+                    board.insert(minion, at: location)
                 } else if let spell = card as? Spell {
                     print("Cast \(spell)")
+                    if let targeter = spell as? Targeter {
+                        let target = interface.selectTarget(targeter.avaliableTargets())
+                        print(target)
+                    }
                 }
 
                 break
@@ -144,9 +155,14 @@ public class Player {
 public protocol PlayerInterface {
     weak var player: Player! { get set }
 
+    func error(_ err: ARError)
+
     func startingMulligan()
     func mulliganCard(_ card: Card) -> Bool
     func finishedMulligan()
     
     func nextAction() -> Player.Action
+    func whichCardToPlay() -> Int
+    func whereToPlayMinion(_ minion: Minion) -> Int
+    func selectTarget(_ targets: [Character]) -> Character
 }

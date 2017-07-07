@@ -140,10 +140,17 @@ public enum PlayRequirement: Equatable {
     }
 }
 
+public protocol Targeter: Card {
+    func avaliableTargets() -> [Character]
+}
+
 fileprivate let GlobalCardIndex: [String: (Player) -> Card] = [
     BloodfenRaptor.name: {BloodfenRaptor(owner: $0)},
 
-    TheCoin.name: {TheCoin(owner: $0)}
+    TheCoin.name: {TheCoin(owner: $0)},
+    Frostbolt.name: {Frostbolt(owner: $0)},
+
+    Jaina.name: {Jaina(owner: $0)}
 ]
 
 public func getCardForName(_ name: String, withOwner owner: Player) -> Card? {
@@ -192,7 +199,7 @@ public protocol Card: CustomStringConvertible {
 
 extension Card {
     public var description: String { get {
-            return "\(name) (ID: \(id)) (\(cost) Mana) [\(text)]"
+        return "\(name) (ID: \(id), player: \(owner.goingFirst ? 1 : 2)) (\(cost) Mana) [\(text)]"
         }
     }
 

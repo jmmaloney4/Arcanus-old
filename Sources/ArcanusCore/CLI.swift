@@ -39,7 +39,6 @@ fileprivate enum TextColor {
 }
 
 public class CLIPlayer: PlayerInterface {
-
     public weak var player: Player!
 
     public init() {
@@ -93,6 +92,7 @@ public class CLIPlayer: PlayerInterface {
         if passedPlayability == nil {
             playability = Array(repeating: Playability.yes, count: options.count)
         } else {
+            precondition(options.count == passedPlayability!.count)
             playability = passedPlayability!
         }
 
@@ -113,6 +113,10 @@ public class CLIPlayer: PlayerInterface {
         }
     }
 
+    public func error(_ err: ARError) {
+        
+    }
+
     public func startingMulligan() {
         print("Starting hand: \(player.hand)")
     }
@@ -125,48 +129,49 @@ public class CLIPlayer: PlayerInterface {
         return boolPrompt("Mulligan \(card)")!;
     }
 
+    public func whereToPlayMinion(_ minion: Minion) -> Int {
+        if player.board.isEmpty {
+            return 0
+        }
+
+        var options: [String] = ["Left Side of \(player.board.minion(at: 0))"]
+        for k in 1..<player.board.count {
+            options.append("Between \(player.board.minion(at: k - 1)) and \(player.board.minion(at: k))")
+        }
+        options.append("Right Side of \(player.board.minion(at: player.board.count - 1))")
+        return optionPrompt(options)
+    }
+
+    public func whichCardToPlay() -> Int {
+        let options = player.hand.contents.map({ $0.description })
+        let playability = player.hand.contents.map({ $0.playability })
+        return optionPrompt(options, playability: playability)
+    }
+
+    public func selectTarget(_ targets: [Character]) -> Character {
+        let options = targets.map({ $0.description })
+        let playability = Array(repeating: Playability.yes, count: options.count)
+        return targets[optionPrompt(options, playability: playability)]
+    }
+
     public func nextAction() -> Player.Action {
         print("Avaliable: \(player.mana), Used: \(player.usedMana), Locked: \(player.lockedMana), Overloaded: \(player.overloadedMana)")
         print("In Play: \(player.game.charactersInPlay)")
 
-        let handPlayability = player.hand.overallPlayability()
-        switch (optionPrompt(["Play Card", "Use Hero Power", "Minion Combat", "Hero Combat", "End Turn"],
-                             playability: [handPlayability == .no ? .withEffect : .yes, .no, .no, .no, .withEffect])) {
-        case 0:
-            let handOptions = player.hand.contents.map({ $0.description })
-            let handPlayabilityList = player.hand.contents.map({ $0.playability })
+        var playability: [Playability] = [player.hand.overallPlayability() == .no ? .withEffect : .yes, .no, .no, .no]
+        // Set End turn to .yes if no other actions are avaliable, otherwise .withEffect
+        playability.append(playability.contains(.yes) ? .withEffect : .yes)
 
+        switch (optionPrompt(["Play Card", "Use Hero Power", "Minion Combat", "Hero Combat", "End Turn"],
+                             playability: playability)) {
+        case 0:
             // If no cards can be played, just print out hand
-            if handPlayability == .no {
-                printOptionList(handOptions, playability: handPlayabilityList)
+            if player.hand.overallPlayability() == .no {
+                printOptionList(player.hand.contents.map({ $0.description }),
+                                playability: player.hand.contents.map({ $0.playability }))
                 return nextAction()
             }
-
-            let index = optionPrompt(handOptions, playability: handPlayabilityList);
-            let card = player.hand[index]
-
-            if card is Minion {
-                if player.board.contents.isEmpty {
-                    return .playCard(index: index, location: 0, target: nil)
-                }
-
-                var boardOptions: [String] = ["Left Side of \(player.board.minion(at: 0))"]
-                for k in 1..<player.board.count {
-                    boardOptions.append("Between \(player.board.minion(at: k - 1)) and \(player.board.minion(at: k))")
-                }
-                boardOptions.append("Right Side of \(player.board.minion(at: player.board.count - 1))")
-                let location = optionPrompt(boardOptions)
-
-                return .playCard(index: index, location: location, target: nil)
-            } else if card is Spell {
-                /*if card.hasRequirement(.requiresTargetToPlay) {
-                    print("Needs target")
-
-                    // var targets = player.game.charactersInPlay.filter({})
-                }
-                 */
-                return .playCard(index: index, location: nil, target: nil)
-            }
+            return .playCard
         case 1:
             return .heroPower
         case 2:

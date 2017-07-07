@@ -14,6 +14,8 @@ internal class Board: Sequence, CustomStringConvertible {
         }
     }
     public var description: String { return contents.description }
+    var isEmpty: Bool { get { return contents.isEmpty } }
+
 
     init() {
         contents = []

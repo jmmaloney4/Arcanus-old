@@ -54,6 +54,31 @@ public class TheCoin: Spell {
     }
 }
 
+public class Frostbolt: Spell, Targeter {
+    static let name = "Frostbolt"
+    static let cost = 2
+    static let cardClass = Class.mage
+
+    public var owner: Player
+    public var id: Int
+    public var name: String { get { return Frostbolt.name } }
+    public var cost: Int { get { return Frostbolt.cost } }
+    public var cardClass: Class { get { return Frostbolt.cardClass } }
+    public var set: Set { get { return .basic } }
+    public var rarity: Rarity { get { return .free } }
+    public var text: String { get { return "Deal 3 damage to a character and Freeze it." } }
+    public var requirements: [PlayRequirement] { get { return [ .requiresTargetToPlay ] } }
+
+    public init(owner: Player) {
+        self.owner = owner
+        self.id = owner.game.getNextEntityID()
+    }
+
+    public func avaliableTargets() -> [Character] {
+        return owner.game.charactersInPlay
+    }
+}
+
 public class Jaina: Hero {
     static let name = "Jaina Proudmoore"
     static let cost = 0

@@ -8,4 +8,7 @@ public enum ARError: Error {
     case cardDoesNotExist(name: String)
     case readingFileFailed(path: String)
     case invalidFormat
+
+    case invalidResponse
+    case notEnoughMana
 }
