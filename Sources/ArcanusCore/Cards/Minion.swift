@@ -22,9 +22,6 @@ public enum Race: CustomStringConvertible {
 
 public protocol Minion: Character {
     var race: Race { get }
-
-    func attack(_ target: Minion)
-    func attackedBy(_ source: Minion)
 }
 
 extension Minion {
@@ -37,14 +34,5 @@ extension Minion {
             rv.append("\(cost) Mana, \(attack)/\(health)) [\(text)]")
             return rv
         }
-    }
-
-    public func attack(_ target: Minion) {
-        dealDamage(amount: self.attack, to: target)
-        target.attackedBy(self)
-    }
-
-    public func attackedBy(_ source: Minion) {
-        dealDamage(amount: self.attack, to: source)
     }
 }

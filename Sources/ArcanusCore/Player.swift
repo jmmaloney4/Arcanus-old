@@ -14,7 +14,7 @@ public class Player {
     internal private(set) var hand: Hand!
     internal private(set) var board: Board
     internal private(set) var hero: Hero!
-    internal var otherPlayer: Player {
+    internal var enemy: Player {
         get {
             if isPlayerOne {
                 return game.players[1]
@@ -22,6 +22,14 @@ public class Player {
                 return game.players[0]
             }
         }
+    }
+
+    internal func ownedCharacters() -> [Character] {
+        var rv: [Character] = [hero]
+        for c in board {
+            rv.append(c)
+        }
+        return rv
     }
 
     internal var mana: Int {
@@ -104,8 +112,7 @@ public class Player {
     public enum Action {
         case playCard
         case heroPower
-        case minionCombat
-        case heroCombat
+        case combat
         case endTurn
     }
 
@@ -151,9 +158,9 @@ public class Player {
                     }
                 }
 
-            case .minionCombat:
-                let attacker = interface.whichMinionToAttackWith()
-                let target = interface.whichMinionToAttack(attacker)
+            case .combat:
+                let attacker = interface.characterToAttackWith(ownedCharacters())
+                let target = interface.characterToAttack(enemy.ownedCharacters())
 
                 attacker.attack(target)
 
@@ -180,6 +187,6 @@ public protocol PlayerInterface {
     func whichCardToPlay() -> Int
     func whereToPlayMinion(_ minion: Minion) -> Int
     func selectTarget(_ targets: [Character]) -> Character
-    func whichMinionToAttackWith() -> Minion
-    func whichMinionToAttack(_ attacker: Minion) -> Minion
+    func characterToAttackWith(_ canAttack: [Character]) -> Character
+    func characterToAttack(_ possibleTargets: [Character]) -> Character
 }

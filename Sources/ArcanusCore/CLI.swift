@@ -158,11 +158,11 @@ public class CLIPlayer: PlayerInterface {
         print("Avaliable: \(player.mana), Used: \(player.usedMana), Locked: \(player.lockedMana), Overloaded: \(player.overloadedMana)")
         print("In Play: \(player.game.charactersInPlay)")
 
-        var playability: [Playability] = [player.hand.overallPlayability() == .no ? .withEffect : .yes, .no, .yes, .no]
+        var playability: [Playability] = [player.hand.overallPlayability() == .no ? .withEffect : .yes, .no, .yes]
         // Set End turn to .yes if no other actions are avaliable, otherwise .withEffect
         playability.append(playability.contains(.yes) ? .withEffect : .yes)
 
-        switch (optionPrompt(["Play Card", "Use Hero Power", "Minion Combat", "Hero Combat", "End Turn"],
+        switch (optionPrompt(["Play Card", "Use Hero Power", "Combat", "End Turn"],
                              playability: playability)) {
         case 0:
             // If no cards can be played, just print out hand
@@ -175,10 +175,8 @@ public class CLIPlayer: PlayerInterface {
         case 1:
             return .heroPower
         case 2:
-            return .minionCombat
+            return .combat
         case 3:
-            return .heroCombat
-        case 4:
             return .endTurn
         default:
             // Error
@@ -187,15 +185,17 @@ public class CLIPlayer: PlayerInterface {
         return .endTurn
     }
 
-    public func whichMinionToAttackWith() -> Minion {
-        let options = player.board.contents.map({ $0.description })
-        let playability = Array(repeating: Playability.yes, count: options.count)
-        return player.board[optionPrompt(options, playability: playability)]
+    public func characterToAttackWith(_ canAttack: [Character]) -> Character {
+        return canAttack[optionPrompt(canAttack.map({ $0.description }))]
+    }
+
+    public func characterToAttack(_ possibleTargets: [Character]) -> Character {
+        return possibleTargets[optionPrompt(possibleTargets.map({ $0.description }))]
     }
 
     public func whichMinionToAttack(_ attacker: Minion) -> Minion {
-        let options = player.otherPlayer.board.contents.map({ $0.description })
+        let options = player.enemy.board.contents.map({ $0.description })
         let playability = Array(repeating: Playability.yes, count: options.count)
-        return player.otherPlayer.board[optionPrompt(options, playability: playability)]
+        return player.enemy.board[optionPrompt(options, playability: playability)]
     }
 }
