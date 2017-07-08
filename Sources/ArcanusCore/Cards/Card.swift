@@ -202,7 +202,7 @@ public protocol Card: CustomStringConvertible {
 extension Card {
     public var description: String {
         get {
-            return "\(name) (ID: \(id), owner: \(owner.goingFirst ? 1 : 2)) (\(cost) Mana) [\(text)]"
+            return "\(name) (ID: \(id), owner: \(owner.isPlayerOne ? 1 : 2)) (\(cost) Mana) [\(text)]"
         }
     }
 

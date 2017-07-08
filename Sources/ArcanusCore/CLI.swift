@@ -158,7 +158,7 @@ public class CLIPlayer: PlayerInterface {
         print("Avaliable: \(player.mana), Used: \(player.usedMana), Locked: \(player.lockedMana), Overloaded: \(player.overloadedMana)")
         print("In Play: \(player.game.charactersInPlay)")
 
-        var playability: [Playability] = [player.hand.overallPlayability() == .no ? .withEffect : .yes, .no, .no, .no]
+        var playability: [Playability] = [player.hand.overallPlayability() == .no ? .withEffect : .yes, .no, .yes, .no]
         // Set End turn to .yes if no other actions are avaliable, otherwise .withEffect
         playability.append(playability.contains(.yes) ? .withEffect : .yes)
 
@@ -185,5 +185,17 @@ public class CLIPlayer: PlayerInterface {
             assert(false, "Shouldn't reach this switch case")
         }
         return .endTurn
+    }
+
+    public func whichMinionToAttackWith() -> Minion {
+        let options = player.board.contents.map({ $0.description })
+        let playability = Array(repeating: Playability.yes, count: options.count)
+        return player.board[optionPrompt(options, playability: playability)]
+    }
+
+    public func whichMinionToAttack(_ attacker: Minion) -> Minion {
+        let options = player.otherPlayer.board.contents.map({ $0.description })
+        let playability = Array(repeating: Playability.yes, count: options.count)
+        return player.otherPlayer.board[optionPrompt(options, playability: playability)]
     }
 }
