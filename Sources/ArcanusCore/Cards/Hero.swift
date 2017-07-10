@@ -16,7 +16,7 @@ func getDefaultHeroForClass(_ cardClass: Class, owner: Player) -> Hero? {
 }
 
 public protocol Hero: Character {
-    
+    var heroPower: HeroPower { get }
 }
 
 extension Hero {

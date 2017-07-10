@@ -21,11 +21,11 @@ internal class Deck: Sequence, CustomStringConvertible {
 
         let entries = fileData.components(separatedBy: .newlines)
 
-        if entries.count < Game.defaultRules.cardsInDeck {
+        if entries.count < player.game.rules.cardsInDeck {
             throw ARError.invalidFormat
         }
 
-        let usableEntries = entries.prefix(Game.defaultRules.cardsInDeck)
+        let usableEntries = entries.prefix(player.game.rules.cardsInDeck)
         for entry in usableEntries {
             if let card = getCardForName(entry, withOwner: self.player) {
                 contents.append(card)

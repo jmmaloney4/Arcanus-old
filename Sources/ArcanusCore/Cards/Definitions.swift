@@ -125,20 +125,50 @@ public class Jaina: Hero {
     public var armor: Int = 0
     public private(set) var isDead: Bool = false
     public private(set) var isFrozen: Bool = false
+    public private(set) var heroPower: HeroPower
 
     public init(owner: Player) {
         self.owner = owner
         self.id = owner.game.getNextEntityID()
+        self.heroPower = Fireblast(owner: self.owner)
     }
-
+    
     public func takeDamage(_ amount: Int, from source: Card) {
         health -= amount
         if health <= 0 {
             isDead = true
         }
     }
-
+    
     public func frozenBy(_ source: Card) {
         isFrozen = true
+    }
+}
+
+public class Fireblast: HeroPower, Targeter {
+    static let name = "Jaina Proudmoore"
+    static let cost = 0
+    
+    public var owner: Player
+    public var id: Int
+    public var name: String { get { return Fireblast.name } }
+    public var cost: Int { get { return Fireblast.cost } }
+    public var cardClass: Class { get { return .mage } }
+    public var set: Set { get { return .basic } }
+    public var rarity: Rarity { get { return .free } }
+    public var text: String { get { return "Deal 1 damage." } }
+    public var requirements: [PlayRequirement] { get { return [.requiresTargetToPlay] } }
+    
+    public init(owner: Player) {
+        self.owner = owner
+        self.id = owner.game.getNextEntityID()
+    }
+    
+    public func avaliableTargets() -> [Character] {
+        return owner.game.charactersInPlay
+    }
+    
+    public func executeHeroPowerText(onTarget target: Character?) throws {
+        self.dealDamage(amount: 1, to: target!)
     }
 }

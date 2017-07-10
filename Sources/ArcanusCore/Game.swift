@@ -17,6 +17,8 @@ public class Game {
 
     internal static let defaultRules = Rules()
 
+    internal private(set) var rules: Rules = Rules()
+    
     internal private(set) var rng: Random
     internal private(set) var players: [Player]
     internal private(set) var firstPlayer: Int!
@@ -24,7 +26,6 @@ public class Game {
     internal private(set) var hasEnded: Bool
     internal private(set) var hasStarted: Bool = false
     internal private(set) var turn: Int
-    private var events: [GameEvent] = []
 
     public init(playerOneInterface interfacePlayer1: inout PlayerInterface,
                 deckPath deckPathPlayer1: String,
@@ -37,8 +38,6 @@ public class Game {
         board = Board()
         hasEnded = false
         turn = 0
-
-        self.addEvent(.initGame(Game.defaultRules))
 
         players.append(try! Player(isPlayerOne: true,
                               isGoingFirst: firstPlayer == 0,
@@ -76,16 +75,6 @@ public class Game {
             }
             return rv
         }
-    }
-
-    private func addEvent(_ event: GameEvent) {
-        events.append(event)
-    }
-
-    enum GameEvent {
-        case initGame(Rules)
-        case initPlayer
-        case playerAction(Player.Action)
     }
 
     // -1 so when incremented first card will have id = 0

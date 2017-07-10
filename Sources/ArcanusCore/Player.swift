@@ -77,7 +77,7 @@ public class Player {
             throw error
         }
 
-        hand = deck.startingHand(ofSize: goingFirst ? Game.defaultRules.startingHandSizeGoFirst : Game.defaultRules.startingHandSizeGoSecond)!
+        hand = deck.startingHand(ofSize: goingFirst ? game.rules.startingHandSizeGoFirst : game.rules.startingHandSizeGoSecond)!
 
         self.interface.player = self
         self.deck.player = self
@@ -152,12 +152,21 @@ public class Player {
                     board.insert(minion, at: location)
                 } else if let spell = card as? Spell {
                     print("Cast \(spell)")
+                    var target: Character? = nil
                     if let targeter = spell as? Targeter {
-                        let target = interface.selectTarget(targeter.avaliableTargets())
-                        try! spell.executeSpellText(onTarget: target)
+                        target = interface.selectTarget(targeter.avaliableTargets())
                     }
+                    try! spell.executeSpellText(onTarget: target)
                 }
 
+            case .heroPower:
+                var target: Character? = nil
+                if let targeter = self.hero.heroPower as? Targeter {
+                    target = interface.selectTarget(targeter.avaliableTargets())
+                }
+                try! self.hero.heroPower.executeHeroPowerText(onTarget: target)
+                break
+                
             case .combat:
                 let attacker = interface.characterToAttackWith(ownedCharacters())
                 let target = interface.characterToAttack(enemy.ownedCharacters())
@@ -167,8 +176,6 @@ public class Player {
                 break
             case .endTurn:
                 return
-            default:
-                break
             }
         }
     }

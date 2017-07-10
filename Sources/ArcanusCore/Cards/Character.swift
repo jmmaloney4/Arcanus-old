@@ -26,7 +26,7 @@ public protocol Character: Card {
 
 extension Character {
     public var canAttack: Bool { get { return true } }
-
+    
     public func attack(_ target: Character) {
         dealDamage(amount: self.attack, to: target)
         target.attackedBy(self)
