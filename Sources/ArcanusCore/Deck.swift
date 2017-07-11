@@ -6,6 +6,8 @@
 
 import Foundation
 
+// See https://www.reddit.com/r/hearthstone/comments/6f2xyk/how_to_encodedecode_deck_codes/ 
+// for info on how the encoding works
 internal class Deck: Sequence, CustomStringConvertible {
     private(set) public var contents: [Card] = []
     public var count: Int { get { return contents.count } }

@@ -184,6 +184,7 @@ public func getHeroForName(_ name: String, withOwner owner: Player) -> Hero? {
 public protocol Card: CustomStringConvertible {
     var owner: Player { get }
     var id: Int { get }
+    var dbfID: Int { get }
     var name: String { get }
     var text: String { get }
     var cost: Int { get }

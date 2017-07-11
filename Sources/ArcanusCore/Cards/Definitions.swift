@@ -9,12 +9,14 @@ import Foundation
 public class BloodfenRaptor: Minion {
 
     static let name = "Bloodfen Raptor"
+    static let dbfID = 216
     static let cost = 2
     static let health = 2
     static let attack = 3
 
-    public var owner: Player
-    public var id: Int
+    public private(set) var owner: Player
+    public private(set) var id: Int
+    public var dbfID: Int { get { return BloodfenRaptor.dbfID } }
     public var name: String { get { return BloodfenRaptor.name } }
     public var cost: Int { get { return BloodfenRaptor.cost } }
     public var cardClass: Class { get { return .neutral } }
@@ -49,10 +51,12 @@ public class BloodfenRaptor: Minion {
 
 public class TheCoin: Spell {
     static let name = "The Coin"
+    static let dbfID = 1747
     static let cost = 0
-
+    
     public var owner: Player
     public var id: Int
+    public var dbfID: Int { get { return TheCoin.dbfID } }
     public var name: String { get { return TheCoin.name } }
     public var cost: Int { get { return TheCoin.cost } }
     public var cardClass: Class { get { return .neutral } }
@@ -73,11 +77,13 @@ public class TheCoin: Spell {
 
 public class Frostbolt: Spell, Targeter {
     static let name = "Frostbolt"
+    static let dbfID = 662
     static let cost = 2
     static let cardClass = Class.mage
 
     public var owner: Player
     public var id: Int
+    public var dbfID: Int { get { return Frostbolt.dbfID } }
     public var name: String { get { return Frostbolt.name } }
     public var cost: Int { get { return Frostbolt.cost } }
     public var cardClass: Class { get { return Frostbolt.cardClass } }
@@ -106,12 +112,14 @@ public class Frostbolt: Spell, Targeter {
 
 public class Jaina: Hero {
     static let name = "Jaina Proudmoore"
+    static let dbfID = 637
     static let cost = 0
     static let health = 30
     static let attack = 0
 
     public var owner: Player
     public var id: Int
+    public var dbfID: Int { get { return Frostbolt.dbfID } }
     public var name: String { get { return Jaina.name } }
     public var cost: Int { get { return Jaina.cost } }
     public var cardClass: Class { get { return .mage } }
@@ -146,11 +154,13 @@ public class Jaina: Hero {
 }
 
 public class Fireblast: HeroPower, Targeter {
-    static let name = "Jaina Proudmoore"
-    static let cost = 0
+    static let name = "Fireblast"
+    static let dbfID: Int = 39791
+    static let cost = 2
     
     public var owner: Player
     public var id: Int
+    public var dbfID: Int { get { return Frostbolt.dbfID } }
     public var name: String { get { return Fireblast.name } }
     public var cost: Int { get { return Fireblast.cost } }
     public var cardClass: Class { get { return .mage } }
