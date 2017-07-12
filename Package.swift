@@ -12,5 +12,6 @@ let package = Package(
 
     dependencies: [
         .Package(url: "https://github.com/jmmaloney4/Squall.git", versions: Version(1,2,3)..<Version(1,3,0)),
+        .Package(url: "https://github.com/jmmaloney4/VarInt.git", "0.3.0"),
     ]
 )

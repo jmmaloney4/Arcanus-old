@@ -13,10 +13,14 @@ internal class Deck: Sequence, CustomStringConvertible {
     public var count: Int { get { return contents.count } }
     public var description: String { return contents.map({$0.description}).joined(separator: "\n") }
     public weak var player: Player!
+    
+    public var name: String
 
     init(path: String, player: Player) throws {
         self.player = player
-
+        
+        name = ""
+        
         guard let fileData = try? String(contentsOfFile: path, encoding: .utf8) else {
             throw ARError.readingFileFailed(path: path)
         }
