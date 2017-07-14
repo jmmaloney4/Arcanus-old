@@ -12,9 +12,13 @@ fileprivate let GlobalCardNameIndex: [String: (Player) -> Card] = [
     TheCoin.name: {TheCoin(owner: $0)},
     Frostbolt.name: {Frostbolt(owner: $0)},
     
-    Jaina.name: {Jaina(owner: $0)},
+    WickedKnife.name: {WickedKnife(owner: $0)},
     
-    Fireblast.name: {Fireblast(owner: $0)}
+    Jaina.name: {Jaina(owner: $0)},
+    Valeera.name: {Valeera(owner: $0)},
+    
+    Fireblast.name: {Fireblast(owner: $0)},
+    DaggerMastery.name: {DaggerMastery(owner: $0)},
 ]
 
 fileprivate let GlobalCardDbfIDIndex: [Int: (Player) -> Card] = [
@@ -23,9 +27,13 @@ fileprivate let GlobalCardDbfIDIndex: [Int: (Player) -> Card] = [
     TheCoin.dbfID: {TheCoin(owner: $0)},
     Frostbolt.dbfID: {Frostbolt(owner: $0)},
     
-    Jaina.dbfID: {Jaina(owner: $0)},
+    WickedKnife.dbfID: {WickedKnife(owner: $0)},
     
-    Fireblast.dbfID: {Fireblast(owner: $0)}
+    Jaina.dbfID: {Jaina(owner: $0)},
+    Valeera.dbfID: {Valeera(owner: $0)},
+    
+    Fireblast.dbfID: {Fireblast(owner: $0)},
+    DaggerMastery.dbfID: {DaggerMastery(owner: $0)},
 ]
 
 public func getCardForName(_ name: String, withOwner owner: Player) -> Card? {

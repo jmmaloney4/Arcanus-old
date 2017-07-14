@@ -115,7 +115,6 @@ public class Jaina: Hero {
     static let dbfID = 637
     static let cost = 0
     static let health = 30
-    static let attack = 0
 
     public var owner: Player
     public var id: Int
@@ -127,10 +126,10 @@ public class Jaina: Hero {
     public var rarity: Rarity { get { return .free } }
     public var text: String { get { return "" } }
     public var requirements: [PlayRequirement] { get { return [] } }
-    public var attack: Int = Jaina.attack
     public var health: Int = Jaina.health
     public var maxHealth: Int = Jaina.health
     public var armor: Int = 0
+    public var weapon: Weapon? = nil
     public private(set) var isDead: Bool = false
     public private(set) var isFrozen: Bool = false
     public private(set) var heroPower: HeroPower
@@ -150,6 +149,10 @@ public class Jaina: Hero {
     
     public func frozenBy(_ source: Card) {
         isFrozen = true
+    }
+    
+    public func equipWeapon(_ weapon: Weapon) {
+        self.weapon = weapon
     }
 }
 
@@ -180,5 +183,103 @@ public class Fireblast: HeroPower, Targeter {
     
     public func executeHeroPowerText(onTarget target: Character?) throws {
         self.dealDamage(amount: 1, to: target!)
+    }
+}
+
+public class Valeera: Hero {
+    static let name = "Valeera Sanguinar"
+    static let dbfID = 930
+    static let cost = 0
+    static let health = 30
+    
+    public var owner: Player
+    public var id: Int
+    public var dbfID: Int { get { return Valeera.dbfID } }
+    public var name: String { get { return Valeera.name } }
+    public var cost: Int { get { return Valeera.cost } }
+    public var cardClass: Class { get { return .rouge } }
+    public var set: Set { get { return .basic } }
+    public var rarity: Rarity { get { return .free } }
+    public var text: String { get { return "" } }
+    public var requirements: [PlayRequirement] { get { return [] } }
+    public var health: Int = Valeera.health
+    public var maxHealth: Int = Valeera.health
+    public var armor: Int = 0
+    public var weapon: Weapon? = nil
+    public private(set) var isDead: Bool = false
+    public private(set) var isFrozen: Bool = false
+    public private(set) var heroPower: HeroPower
+    
+    public init(owner: Player) {
+        self.owner = owner
+        self.id = owner.game.getNextEntityID()
+        self.heroPower = DaggerMastery(owner: self.owner)
+    }
+    
+    public func takeDamage(_ amount: Int, from source: Card) {
+        health -= amount
+        if health <= 0 {
+            isDead = true
+        }
+    }
+    
+    public func frozenBy(_ source: Card) {
+        isFrozen = true
+    }
+    
+    public func equipWeapon(_ weapon: Weapon) {
+        self.weapon = weapon
+    }
+}
+
+public class DaggerMastery: HeroPower {
+    static let name = "Dagger Mastery"
+    static let dbfID: Int = 730
+    static let cost = 2
+    
+    public var owner: Player
+    public var id: Int
+    public var dbfID: Int { get { return DaggerMastery.dbfID } }
+    public var name: String { get { return DaggerMastery.name } }
+    public var cost: Int { get { return DaggerMastery.cost } }
+    public var cardClass: Class { get { return .rouge } }
+    public var set: Set { get { return .basic } }
+    public var rarity: Rarity { get { return .free } }
+    public var text: String { get { return "Equip a 1/2 Dagger." } }
+    public var requirements: [PlayRequirement] { get { return [.requiresTargetToPlay] } }
+    
+    public init(owner: Player) {
+        self.owner = owner
+        self.id = owner.game.getNextEntityID()
+    }
+    
+    public func executeHeroPowerText(onTarget target: Character?) throws {
+        self.owner.hero.equipWeapon(WickedKnife(owner: owner))
+    }
+}
+
+public class WickedKnife: Weapon {
+    static let name = "Wicked Knife"
+    static let dbfID: Int = 46054
+    static let cost = 1
+    static let attack = 1
+    static let durability = 2
+    
+    public var owner: Player
+    public var id: Int
+    public var dbfID: Int { get { return WickedKnife.dbfID } }
+    public var name: String { get { return WickedKnife.name } }
+    public var cost: Int { get { return WickedKnife.cost } }
+    public var cardClass: Class { get { return .rouge } }
+    public var set: Set { get { return .basic } }
+    public var rarity: Rarity { get { return .free } }
+    public var text: String { get { return "Equip a 1/2 Dagger." } }
+    public var requirements: [PlayRequirement] { get { return [.requiresTargetToPlay] } }
+    public var attack: Int = WickedKnife.attack
+    public var durability: Int = WickedKnife.durability
+    
+    public init(owner: Player) {
+        self.owner = owner
+        self.id = owner.game.getNextEntityID()
     }
 }

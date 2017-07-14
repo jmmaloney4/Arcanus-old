@@ -70,7 +70,7 @@ public class Player {
         board = Board()
         self.game = game
 
-        self.hero = getDefaultHeroForClass(.mage, owner: self)!
+        self.hero = getDefaultHeroForClass(isPlayerOne ? .mage : .rouge, owner: self)!
         do {
             self.deck = try Deck(cards: Array(repeatElement(BloodfenRaptor(owner: self), count: game.rules.cardsInDeck)), player: self)
             self.deck = try Deck(deckstring: deck.getDeckstring(), player: self)
@@ -118,6 +118,7 @@ public class Player {
     }
 
     func takeTurn(_ turn: Int) {
+        interface.startingTurn(turn)
         if manaCrystals < Game.defaultRules.maxManaCrystals {
             manaCrystals += 1
         }
@@ -132,7 +133,7 @@ public class Player {
             // Fatigue
             print("Fatigue not yet implemented")
         }
-
+        
         while true {
             let action = interface.nextAction()
             switch action {
@@ -196,6 +197,7 @@ public protocol PlayerInterface {
     func mulliganCard(_ card: Card) -> Bool
     func finishedMulligan()
     
+    func startingTurn(_ turn: Int)
     func nextAction() -> Player.Action
     func whichCardToPlay() -> Int
     func whereToPlayMinion(_ minion: Minion) -> Int

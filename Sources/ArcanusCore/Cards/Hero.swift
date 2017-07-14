@@ -10,6 +10,8 @@ func getDefaultHeroForClass(_ cardClass: Class, owner: Player) -> Hero? {
     switch cardClass {
     case .mage:
         return Jaina(owner: owner)
+    case .rouge:
+        return Valeera(owner: owner)
     default:
         return nil
     }
@@ -17,12 +19,25 @@ func getDefaultHeroForClass(_ cardClass: Class, owner: Player) -> Hero? {
 
 public protocol Hero: Character {
     var heroPower: HeroPower { get }
+    var weapon: Weapon? { get }
+    
+    func equipWeapon(_ weapon: Weapon)
 }
 
 extension Hero {
     public var description: String {
         get {
             return "\(name) (ID: \(id), owner: \(owner.goingFirst ? 1 : 2), \(cost) Mana, \(health) Health, \(armor) Armor) [\(text)]"
+        }
+    }
+    
+    public var attack: Int {
+        get {
+            if weapon != nil {
+                return weapon!.attack
+            } else {
+                return 0
+            }
         }
     }
 }

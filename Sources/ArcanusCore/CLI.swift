@@ -129,6 +129,10 @@ public class CLIPlayer: PlayerInterface {
         return boolPrompt("Mulligan \(card)")!;
     }
 
+    public func startingTurn(_ turn: Int) {
+        print("!=== Player \(player.isPlayerOne ? 1 : 2) starting turn \(turn / 2) ===!")
+    }
+    
     public func whereToPlayMinion(_ minion: Minion) -> Int {
         if player.board.isEmpty {
             return 0
