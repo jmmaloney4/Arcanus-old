@@ -7,11 +7,14 @@
 import Foundation
 
 public enum ARError: Error {
-    case cardDoesNotExist(name: String)
+    case cardForNameDoesNotExist(String)
+    case cardForDbfIDDoesNotExist(Int)
     case readingFileFailed(path: String)
     case invalidFormat
 
     case invalidResponse
     case notEnoughMana
     case invalidTarget
+    
+    case invalidInput
 }

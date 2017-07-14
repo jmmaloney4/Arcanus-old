@@ -72,11 +72,12 @@ public class Player {
 
         self.hero = getDefaultHeroForClass(.mage, owner: self)!
         do {
-            self.deck = try Deck(path: deckPath, player: self)
+            self.deck = try Deck(cards: Array(repeatElement(BloodfenRaptor(owner: self), count: game.rules.cardsInDeck)), player: self)
+            self.deck = try Deck(deckstring: deck.getDeckstring(), player: self)
         } catch {
             throw error
         }
-
+        
         hand = deck.startingHand(ofSize: goingFirst ? game.rules.startingHandSizeGoFirst : game.rules.startingHandSizeGoSecond)!
 
         self.interface.player = self

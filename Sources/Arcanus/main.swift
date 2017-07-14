@@ -9,18 +9,19 @@ import ArcanusCore
 
 func main() {
 
+    /*
     if CommandLine.arguments.count < 3 {
         print("Usage: \(CommandLine.arguments[0]) [deck player1] [deck player2]")
         exit(1)
     }
-
+*/
     var p1: PlayerInterface = CLIPlayer()
     var p2: PlayerInterface = CLIPlayer()
 
     let game = Game(playerOneInterface: &p1,
-                        deckPath: CommandLine.arguments[1],
+                        deckPath: "", //CommandLine.arguments[1],
                         playerTwoInterface: &p2,
-                        deckPath: CommandLine.arguments[1])
+                        deckPath: "") //CommandLine.arguments[2])
 
     game.start()
  

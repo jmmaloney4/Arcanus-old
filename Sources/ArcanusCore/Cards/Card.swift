@@ -144,43 +144,6 @@ public protocol Targeter: Card {
     func avaliableTargets() -> [Character]
 }
 
-fileprivate let GlobalCardIndex: [String: (Player) -> Card] = [
-    BloodfenRaptor.name: {BloodfenRaptor(owner: $0)},
-
-    TheCoin.name: {TheCoin(owner: $0)},
-    Frostbolt.name: {Frostbolt(owner: $0)},
-
-    Jaina.name: {Jaina(owner: $0)}
-]
-
-public func getCardForName(_ name: String, withOwner owner: Player) -> Card? {
-    if let f = GlobalCardIndex[name] {
-        return f(owner)
-    } else {
-        return nil
-    }
-}
-
-public func getMinionForName(_ name: String, withOwner owner: Player) -> Minion? {
-    return getCardForName(name, withOwner: owner) as? Minion
-}
-
-public func getSpellForName(_ name: String, withOwner owner: Player) -> Spell? {
-    return getCardForName(name, withOwner: owner) as? Spell
-}
-
-public func getWeaponForName(_ name: String, withOwner owner: Player) -> Weapon? {
-    return getCardForName(name, withOwner: owner) as? Weapon
-}
-
-public func getHeroPowerForName(_ name: String, withOwner owner: Player) -> HeroPower? {
-    return getCardForName(name, withOwner: owner) as? HeroPower
-}
-
-public func getHeroForName(_ name: String, withOwner owner: Player) -> Hero? {
-    return getCardForName(name, withOwner: owner) as? Hero
-}
-
 public protocol Card: CustomStringConvertible {
     var owner: Player { get }
     var id: Int { get }

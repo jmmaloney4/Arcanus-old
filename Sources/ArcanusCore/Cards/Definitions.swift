@@ -119,7 +119,7 @@ public class Jaina: Hero {
 
     public var owner: Player
     public var id: Int
-    public var dbfID: Int { get { return Frostbolt.dbfID } }
+    public var dbfID: Int { get { return Jaina.dbfID } }
     public var name: String { get { return Jaina.name } }
     public var cost: Int { get { return Jaina.cost } }
     public var cardClass: Class { get { return .mage } }
@@ -160,7 +160,7 @@ public class Fireblast: HeroPower, Targeter {
     
     public var owner: Player
     public var id: Int
-    public var dbfID: Int { get { return Frostbolt.dbfID } }
+    public var dbfID: Int { get { return Fireblast.dbfID } }
     public var name: String { get { return Fireblast.name } }
     public var cost: Int { get { return Fireblast.cost } }
     public var cardClass: Class { get { return .mage } }
