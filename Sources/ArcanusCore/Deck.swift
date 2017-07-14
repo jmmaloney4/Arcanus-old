@@ -7,12 +7,6 @@
 import Foundation
 import VarInt
 
-private func readCardsOutOfDbfArray(_ ints:[Int64], index: Int, owner: Player) throws -> [Card] {
-    var rv: [Card] = []
-    
-    return rv
-}
-
 // See https://www.reddit.com/r/hearthstone/comments/6f2xyk/how_to_encodedecode_deck_codes/
 // for info on how the encoding works
 internal class Deck: Sequence, CustomStringConvertible {
