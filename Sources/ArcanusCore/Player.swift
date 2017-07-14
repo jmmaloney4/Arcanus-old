@@ -161,6 +161,11 @@ public class Player {
                 }
 
             case .heroPower:
+                if !spendMana(self.hero.heroPower.cost) {
+                    interface.error(.notEnoughMana)
+                    continue;
+                }
+                
                 var target: Character? = nil
                 if let targeter = self.hero.heroPower as? Targeter {
                     target = interface.selectTarget(targeter.avaliableTargets())

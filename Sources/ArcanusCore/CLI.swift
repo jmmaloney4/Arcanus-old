@@ -158,7 +158,7 @@ public class CLIPlayer: PlayerInterface {
         print("Avaliable: \(player.mana), Used: \(player.usedMana), Locked: \(player.lockedMana), Overloaded: \(player.overloadedMana)")
         print("In Play: \(player.game.charactersInPlay)")
 
-        var playability: [Playability] = [player.hand.overallPlayability() == .no ? .withEffect : .yes, .yes, .yes]
+        var playability: [Playability] = [player.hand.overallPlayability() == .no ? .withEffect : .yes, player.hero.heroPower.playability, .yes]
         // Set End turn to .yes if no other actions are avaliable, otherwise .withEffect
         playability.append(playability.contains(.yes) ? .withEffect : .yes)
 
