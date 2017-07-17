@@ -23,6 +23,8 @@ public class Player {
             }
         }
     }
+    
+    // Zones
 
     internal func ownedCharacters() -> [Character] {
         var rv: [Character] = [hero]
@@ -58,7 +60,7 @@ public class Player {
 
     internal weak var game: Game!;
 
-    init(isPlayerOne: Bool,
+    internal init(isPlayerOne: Bool,
          isGoingFirst: Bool,
          interface: inout PlayerInterface,
          deckPath: String,
@@ -85,14 +87,14 @@ public class Player {
     }
 
     /// Returns "Player One" if player one or "Player Two" if player two.
-    func playerString() -> String {
+    internal func playerString() -> String {
         return isPlayerOne ? "Player One" : "Player Two"
     }
 
-    func runMulligan() {
+    internal func runMulligan() {
         interface.startingMulligan()
 
-        let newHand = Hand([])
+        let newHand = Hand([], player: self)
         for c in hand {
             if interface.mulliganCard(c) {
                 newHand.addCard(deck.draw(triggerEvent: false)!)
@@ -117,7 +119,7 @@ public class Player {
         case endTurn
     }
 
-    func takeTurn(_ turn: Int) {
+    internal func takeTurn(_ turn: Int) {
         interface.startingTurn(turn)
         if manaCrystals < Game.defaultRules.maxManaCrystals {
             manaCrystals += 1
@@ -139,7 +141,7 @@ public class Player {
             switch action {
             case .playCard:
                 let index = interface.whichCardToPlay()
-                let card = hand.removeCard(at: index)!
+                let card = hand.remove(at: index)!
                 if !spendMana(card.cost) {
                     interface.error(.notEnoughMana)
                     continue;

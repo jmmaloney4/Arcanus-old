@@ -7,7 +7,6 @@
 import Foundation
 
 public class BloodfenRaptor: Minion {
-
     static let name = "Bloodfen Raptor"
     static let dbfID = 216
     static let cost = 2
@@ -16,6 +15,7 @@ public class BloodfenRaptor: Minion {
 
     public private(set) var owner: Player
     public private(set) var id: Int
+    public var zone: Zones = .deck
     public var dbfID: Int { get { return BloodfenRaptor.dbfID } }
     public var name: String { get { return BloodfenRaptor.name } }
     public var cost: Int { get { return BloodfenRaptor.cost } }
@@ -49,6 +49,135 @@ public class BloodfenRaptor: Minion {
     }
 }
 
+public class DragonEgg: Minion {
+    static let name = "Dragon Egg"
+    static let dbfID = 2278
+    static let cost = 1
+    static let health = 2
+    static let attack = 0
+    
+    public private(set) var owner: Player
+    public private(set) var id: Int
+    public var zone: Zones = .deck
+    public var dbfID: Int { get { return DragonEgg.dbfID } }
+    public var name: String { get { return DragonEgg.name } }
+    public var cost: Int { get { return DragonEgg.cost } }
+    public var cardClass: Class { get { return .neutral } }
+    public var set: Set { get { return .blm } }
+    public var rarity: Rarity { get { return .rare } }
+    public var text: String { get { return "Whenever this minion takes damage, summon a 2/1 Whelp." } }
+    public var requirements: [PlayRequirement] { get { return [] } }
+    public var race: Race { get { return .neutral } }
+    public var attack: Int = DragonEgg.attack
+    public var health: Int = DragonEgg.health
+    public var maxHealth: Int = DragonEgg.health
+    public var armor: Int = 0
+    public private(set) var isDead: Bool = false
+    public private(set) var isFrozen: Bool = false
+    
+    public init(owner: Player) {
+        self.owner = owner
+        self.id = owner.game.getNextEntityID()
+    }
+    
+    public func takeDamage(_ amount: Int, from soruce: Card) {
+        health -= amount
+        if health <= 0 {
+            isDead = true
+        }
+    }
+    
+    public func frozenBy(_ source: Card) {
+        isFrozen = true
+    }
+}
+
+public class BlackWhelp: Minion {
+    static let name = "Black Whelp"
+    static let dbfID = 2278
+    static let cost = 1
+    static let health = 1
+    static let attack = 2
+    
+    public private(set) var owner: Player
+    public private(set) var id: Int
+    public var zone: Zones = .deck
+    public var dbfID: Int { get { return BlackWhelp.dbfID } }
+    public var name: String { get { return BlackWhelp.name } }
+    public var cost: Int { get { return BlackWhelp.cost } }
+    public var cardClass: Class { get { return .neutral } }
+    public var set: Set { get { return .blm } }
+    public var rarity: Rarity { get { return .common } }
+    public var text: String { get { return "" } }
+    public var requirements: [PlayRequirement] { get { return [] } }
+    public var race: Race { get { return .dragon } }
+    public var attack: Int = BlackWhelp.attack
+    public var health: Int = BlackWhelp.health
+    public var maxHealth: Int = BlackWhelp.health
+    public var armor: Int = 0
+    public private(set) var isDead: Bool = false
+    public private(set) var isFrozen: Bool = false
+    
+    public init(owner: Player) {
+        self.owner = owner
+        self.id = owner.game.getNextEntityID()
+    }
+    
+    public func takeDamage(_ amount: Int, from soruce: Card) {
+        health -= amount
+        if health <= 0 {
+            isDead = true
+        }
+    }
+    
+    public func frozenBy(_ source: Card) {
+        isFrozen = true
+    }
+}
+
+public class KnifeJuggler: Minion {
+    static let name = "Knife Juggler"
+    static let dbfID = 1073
+    static let cost = 2
+    static let health = 2
+    static let attack = 2
+    
+    public private(set) var owner: Player
+    public private(set) var id: Int
+    public var zone: Zones = .deck
+    public var dbfID: Int { get { return KnifeJuggler.dbfID } }
+    public var name: String { get { return KnifeJuggler.name } }
+    public var cost: Int { get { return KnifeJuggler.cost } }
+    public var cardClass: Class { get { return .neutral } }
+    public var set: Set { get { return .blm } }
+    public var rarity: Rarity { get { return .rare } }
+    public var text: String { get { return "After you summon a minion, deal 1 damage to a random enemy." } }
+    public var requirements: [PlayRequirement] { get { return [] } }
+    public var race: Race { get { return .dragon } }
+    public var attack: Int = KnifeJuggler.attack
+    public var health: Int = KnifeJuggler.health
+    public var maxHealth: Int = KnifeJuggler.health
+    public var armor: Int = 0
+    public private(set) var isDead: Bool = false
+    public private(set) var isFrozen: Bool = false
+    
+    public init(owner: Player) {
+        self.owner = owner
+        self.id = owner.game.getNextEntityID()
+    }
+    
+    public func takeDamage(_ amount: Int, from soruce: Card) {
+        health -= amount
+        if health <= 0 {
+            isDead = true
+        }
+    }
+    
+    public func frozenBy(_ source: Card) {
+        isFrozen = true
+    }
+}
+
 public class TheCoin: Spell {
     static let name = "The Coin"
     static let dbfID = 1747
@@ -56,6 +185,7 @@ public class TheCoin: Spell {
     
     public var owner: Player
     public var id: Int
+    public var zone: Zones = .deck
     public var dbfID: Int { get { return TheCoin.dbfID } }
     public var name: String { get { return TheCoin.name } }
     public var cost: Int { get { return TheCoin.cost } }
@@ -83,6 +213,7 @@ public class Frostbolt: Spell, Targeter {
 
     public var owner: Player
     public var id: Int
+    public var zone: Zones = .deck
     public var dbfID: Int { get { return Frostbolt.dbfID } }
     public var name: String { get { return Frostbolt.name } }
     public var cost: Int { get { return Frostbolt.cost } }
@@ -118,6 +249,7 @@ public class Jaina: Hero {
 
     public var owner: Player
     public var id: Int
+    public var zone: Zones = .deck
     public var dbfID: Int { get { return Jaina.dbfID } }
     public var name: String { get { return Jaina.name } }
     public var cost: Int { get { return Jaina.cost } }
@@ -163,6 +295,7 @@ public class Fireblast: HeroPower, Targeter {
     
     public var owner: Player
     public var id: Int
+    public var zone: Zones = .deck
     public var dbfID: Int { get { return Fireblast.dbfID } }
     public var name: String { get { return Fireblast.name } }
     public var cost: Int { get { return Fireblast.cost } }
@@ -194,6 +327,7 @@ public class Valeera: Hero {
     
     public var owner: Player
     public var id: Int
+    public var zone: Zones = .deck
     public var dbfID: Int { get { return Valeera.dbfID } }
     public var name: String { get { return Valeera.name } }
     public var cost: Int { get { return Valeera.cost } }
@@ -239,6 +373,7 @@ public class DaggerMastery: HeroPower {
     
     public var owner: Player
     public var id: Int
+    public var zone: Zones = .deck
     public var dbfID: Int { get { return DaggerMastery.dbfID } }
     public var name: String { get { return DaggerMastery.name } }
     public var cost: Int { get { return DaggerMastery.cost } }
@@ -267,6 +402,7 @@ public class WickedKnife: Weapon {
     
     public var owner: Player
     public var id: Int
+    public var zone: Zones = .deck
     public var dbfID: Int { get { return WickedKnife.dbfID } }
     public var name: String { get { return WickedKnife.name } }
     public var cost: Int { get { return WickedKnife.cost } }

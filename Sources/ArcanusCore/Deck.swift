@@ -9,13 +9,17 @@ import VarInt
 
 // See https://www.reddit.com/r/hearthstone/comments/6f2xyk/how_to_encodedecode_deck_codes/
 // for info on how the encoding works
-internal class Deck: Sequence, CustomStringConvertible {
-    private(set) public var contents: [Card]
-    public var count: Int { get { return contents.count } }
-    public var description: String { return contents.map({$0.description}).joined(separator: "\n") }
-    public weak var player: Player!
+internal class Deck: Zone, Sequence, CustomStringConvertible {
+    internal private(set) var contents: [Card]
+    internal var count: Int { get { return contents.count } }
+    internal var description: String { return contents.map({$0.description}).joined(separator: "\n") }
+    internal weak var player: Player!
+    internal var maxSize: Int { get { return player.game.rules.maxCardsInDeck } }
+    internal var isEmpty: Bool { get { return contents.isEmpty } }
+    internal var isFull: Bool { get  { return count >= maxSize } }
+    internal var zoneType: Zones { get { return .deck } }
     
-    init(cards: [Card], player: Player) throws {
+    internal init(cards: [Card], player: Player) throws {
         if cards.count != player.game.rules.cardsInDeck {
             throw ARError.invalidInput
         }
@@ -23,7 +27,7 @@ internal class Deck: Sequence, CustomStringConvertible {
         self.player = player
     }
     
-    convenience init(path: String, player: Player) throws {
+    internal convenience init(path: String, player: Player) throws {
         guard let fileData = try? String(contentsOfFile: path, encoding: .utf8) else {
             throw ARError.readingFileFailed(path: path)
         }
@@ -51,7 +55,7 @@ internal class Deck: Sequence, CustomStringConvertible {
         }
     }
     
-    convenience init(deckstring: String, player: Player) throws {
+    internal convenience init(deckstring: String, player: Player) throws {
         guard var data = Data(base64Encoded: deckstring) else {
             throw ARError.invalidInput
         }
@@ -118,7 +122,7 @@ internal class Deck: Sequence, CustomStringConvertible {
         }
     }
     
-    public func getDeckstring() -> String {
+    internal func getDeckstring() -> String {
         let heroes: [Hero] = [player.hero]
         var cards: [Int:Int] = [:]
         for card in self {
@@ -173,7 +177,24 @@ internal class Deck: Sequence, CustomStringConvertible {
         return Data(bytes: bytes).base64EncodedString()
     }
     
-    public func draw(triggerEvent: Bool = true) -> Card? {
+    subscript(index: Int) -> Card { get { return contents[index] } }
+    
+    internal func remove(at index: Int) -> Card? {
+        if index >= contents.count || index < 0 {
+            return nil
+        }
+        return contents.remove(at: index)
+    }
+    
+    internal func insert(_ card: Card, at index: Int) -> Bool {
+        if index >= contents.count || index < 0 {
+            return false
+        }
+        contents.insert(card, at: index)
+        return true
+    }
+    
+    internal func draw(triggerEvent: Bool = true) -> Card? {
         if contents.isEmpty {
             return nil
         }
@@ -181,11 +202,11 @@ internal class Deck: Sequence, CustomStringConvertible {
         return rv
     }
     
-    public func shuffleIn(_ card: Card) {
+    internal func shuffleIn(_ card: Card) {
         contents.append(card)
     }
     
-    public func startingHand(ofSize size: Int) -> Hand? {
+    internal func startingHand(ofSize size: Int) -> Hand? {
         if size > self.count {
             return nil
         }
@@ -194,10 +215,10 @@ internal class Deck: Sequence, CustomStringConvertible {
         for _ in 0..<size {
             hand.append(self.draw(triggerEvent: false)!)
         }
-        return Hand(hand)
+        return Hand(hand, player: player)
     }
     
-    struct Iterator: IteratorProtocol {
+    internal struct Iterator: IteratorProtocol {
         private var storage: Deck
         private var index: Int = 0
         
@@ -214,7 +235,7 @@ internal class Deck: Sequence, CustomStringConvertible {
         }
     }
     
-    func makeIterator() -> Deck.Iterator {
+    internal func makeIterator() -> Deck.Iterator {
         return Iterator(self)
     }
 }

@@ -12,7 +12,10 @@ public class Game {
         var startingHandSizeGoFirst: Int = 3
         var startingHandSizeGoSecond: Int = 4
         var maxManaCrystals: Int = 10
-        var defaultHeroHealth: Int = 30
+        // var defaultHeroHealth: Int = 30
+        var maxMinionsOnBoard: Int = 7
+        var maxCardsInHand: Int = 10
+        var maxCardsInDeck: Int = 60
     }
 
     internal static let defaultRules = Rules()
@@ -65,7 +68,7 @@ public class Game {
         }
     }
 
-    public var charactersInPlay: [Character] {
+    internal var charactersInPlay: [Character] {
         get {
             var rv: [Character] = [players[0].hero, players[1].hero]
             for p in players {

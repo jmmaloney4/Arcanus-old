@@ -7,11 +7,11 @@
 import Foundation
 import Squall
 
-public class Random {
+internal  class Random {
     private var rng: Gust
-    private var seed: UInt32
+    internal private(set) var seed: UInt32
 
-    init(seed: UInt32 = UInt32(Date().timeIntervalSinceReferenceDate)) {
+    internal init(seed: UInt32 = UInt32(Date().timeIntervalSinceReferenceDate)) {
         self.seed = seed
         rng = Gust(seed: seed)
     }
@@ -21,13 +21,13 @@ public class Random {
     /// - Parameters:
     ///     - min: The minimum value in the range. By default is set to 0.
     ///     - max: The maximum value in the range. By default is set to Int.max.
-    public func next(from min: Int = 0, upTo max: Int = Int.max) -> Int {
+    internal func next(from min: Int = 0, upTo max: Int = Int.max) -> Int {
         let range = UInt32((min...max).count)
         return Int(rng.random() % range) + min
     }
 
     /// Portable function to generate a random Bool.
-    public func nextBool() -> Bool {
+    internal func nextBool() -> Bool {
         return next(from: 0, upTo: 1) == 0 ? true : false
     }
 }

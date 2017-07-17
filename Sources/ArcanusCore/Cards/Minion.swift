@@ -9,12 +9,14 @@ import Foundation
 public enum Race: CustomStringConvertible {
     case neutral
     case beast
+    case dragon
 
     public var description: String {
         get {
             switch self {
             case .neutral: return "Neutral"
             case .beast: return "Beast"
+            case .dragon: return "Dragon"
             }
         }
     }

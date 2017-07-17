@@ -57,6 +57,7 @@ public enum Class: CustomStringConvertible {
 public enum Set: CustomStringConvertible {
     case basic
     case classic
+    case blm
     case oldGods
 
     public var description: String {
@@ -64,6 +65,7 @@ public enum Set: CustomStringConvertible {
             switch self {
             case .basic: return "Basic"
             case .classic: return "Classic"
+            case .blm: return "Blackrock Mountain"
             case .oldGods: return "Whispers of the Old Gods"
             }
         }
@@ -71,7 +73,6 @@ public enum Set: CustomStringConvertible {
 }
 
 public enum Rarity: CustomStringConvertible {
-    case uncollectible
     case free
     case common
     case rare
@@ -81,7 +82,6 @@ public enum Rarity: CustomStringConvertible {
     public var description: String {
         get {
             switch self {
-            case .uncollectible: return "Uncollectible"
             case .free: return "Free"
             case .common: return "Common"
             case .rare: return "Rare"
@@ -94,7 +94,6 @@ public enum Rarity: CustomStringConvertible {
     public var symbol: Swift.Character {
         get {
             switch self {
-            case .uncollectible: return "🚫"
             case .free: return "🆓"
             case .common: return "🖤"
             case .rare: return "💙"
@@ -146,6 +145,7 @@ public protocol Targeter: Card {
 
 public protocol Card: CustomStringConvertible {
     var owner: Player { get }
+    var zone: Zones { get }
     var id: Int { get }
     var dbfID: Int { get }
     var name: String { get }
